@@ -6,18 +6,31 @@ import { Button } from '#/components/ui/button'
 import { Container } from '#/components/ui/container'
 import { cn } from '#/lib/utils'
 
+function heroBackgroundSources(hero: HeroContent) {
+  const desktop = hero.imageUrl
+  const tablet = hero.imageUrlTablet?.trim() || desktop
+  const mobile = hero.imageUrlMobile?.trim() || tablet || desktop
+  return { desktop, tablet, mobile }
+}
+
 export function HeroSection({ hero, className }: { hero: HeroContent; className?: string }) {
+  const { desktop, tablet, mobile } = heroBackgroundSources(hero)
+
   return (
     <section className={cn('relative h-dvh overflow-hidden', className)}>
-      {hero.imageUrl ? (
-        <img
-          src={hero.imageUrl}
-          alt=""
-          aria-hidden
-          className="absolute inset-0 h-full w-full object-cover object-[center_right] md:object-right"
-        />
+      {desktop ? (
+        <picture className="absolute inset-0">
+          <source media="(min-width: 1024px)" srcSet={desktop} />
+          <source media="(min-width: 768px)" srcSet={tablet} />
+          <img
+            src={mobile}
+            alt=""
+            aria-hidden
+            className="h-full w-full object-cover object-[center_right] md:object-right"
+          />
+        </picture>
       ) : null}
-      <Container className="relative flex h-full items-center py-10 md:py-16">
+      <Container className="relative flex h-full items-start py-10 md:items-center md:py-16">
         <motion.div
           initial={{ opacity: 0, x: -24 }}
           animate={{ opacity: 1, x: 0 }}
@@ -32,14 +45,25 @@ export function HeroSection({ hero, className }: { hero: HeroContent; className?
             <span className="text-dq-gold">{hero.highlightWord}</span>
           </h1>
           <p className="type-body mt-8 max-w-lg text-dq-muted">{hero.description}</p>
-          <div className="mt-10 flex flex-col gap-5 sm:flex-row sm:items-center">
-            <Button asChild variant="black" size="lg">
-              <Link to={hero.primaryCtaUrl}>{hero.primaryCtaLabel}</Link>
+          <div className="mt-10 flex flex-nowrap items-center gap-2 md:gap-5">
+            <Button
+              asChild
+              variant="black"
+              size="lg"
+              className="h-10 shrink-0 px-3.5 text-[0.625rem] tracking-[0.1em] md:h-12 md:px-8 md:text-sm md:tracking-[0.18em]"
+            >
+              <Link to={hero.primaryCtaUrl} className="whitespace-nowrap">
+                {hero.primaryCtaLabel}
+              </Link>
             </Button>
-            <Button asChild variant="link" className="justify-start gap-2">
-              <Link to={hero.secondaryCtaUrl}>
+            <Button
+              asChild
+              variant="link"
+              className="h-auto min-w-0 shrink justify-start gap-1.5 p-0 text-[0.625rem] tracking-[0.08em] md:gap-2 md:text-sm md:tracking-normal"
+            >
+              <Link to={hero.secondaryCtaUrl} className="whitespace-nowrap">
                 {hero.secondaryCtaLabel}
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-3.5 w-3.5 shrink-0 md:h-4 md:w-4" />
               </Link>
             </Button>
           </div>

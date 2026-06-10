@@ -53,6 +53,8 @@ export function AdminHero() {
       highlight_word: draft.highlight_word ?? 'Impact.',
       description: draft.description ?? '',
       image_url: draft.image_url ?? '',
+      image_url_tablet: draft.image_url_tablet?.trim() || null,
+      image_url_mobile: draft.image_url_mobile?.trim() || null,
       primary_cta_label: draft.primary_cta_label ?? 'DONATE NOW',
       primary_cta_url: draft.primary_cta_url ?? '/donate',
       secondary_cta_label: draft.secondary_cta_label ?? 'SEE OUR PROGRAMS',
@@ -204,12 +206,31 @@ export function AdminHero() {
               <span className="admin-label">Description</span>
               <textarea className="admin-input min-h-24" value={draft.description ?? ''} onChange={(e) => setDraft({ ...draft, description: e.target.value })} />
             </label>
-            <ImageUploadField
-              label="Hero image"
-              folder="hero"
-              value={draft.image_url ?? ''}
-              onChange={(v) => setDraft({ ...draft, image_url: v })}
-            />
+            <div className="space-y-4 md:col-span-2">
+              <p className="admin-muted text-sm">
+                Upload separate backgrounds per breakpoint. Desktop is required; tablet and mobile fall back to the next larger size when empty.
+              </p>
+              <div className="grid gap-4 md:grid-cols-3">
+                <ImageUploadField
+                  label="Desktop background"
+                  folder="hero"
+                  value={draft.image_url ?? ''}
+                  onChange={(v) => setDraft({ ...draft, image_url: v })}
+                />
+                <ImageUploadField
+                  label="Tablet background"
+                  folder="hero"
+                  value={draft.image_url_tablet ?? ''}
+                  onChange={(v) => setDraft({ ...draft, image_url_tablet: v })}
+                />
+                <ImageUploadField
+                  label="Mobile background"
+                  folder="hero"
+                  value={draft.image_url_mobile ?? ''}
+                  onChange={(v) => setDraft({ ...draft, image_url_mobile: v })}
+                />
+              </div>
+            </div>
             <label className="block space-y-2">
               <span className="admin-label">Primary CTA label</span>
               <input className="admin-input" value={draft.primary_cta_label ?? ''} onChange={(e) => setDraft({ ...draft, primary_cta_label: e.target.value })} />

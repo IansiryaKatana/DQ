@@ -16,6 +16,8 @@ export type HeroContent = {
   highlightWord: string
   description: string
   imageUrl: string
+  imageUrlTablet?: string | null
+  imageUrlMobile?: string | null
   primaryCtaLabel: string
   primaryCtaUrl: string
   secondaryCtaLabel: string

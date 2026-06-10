@@ -46,6 +46,8 @@ export type Database = {
           highlight_word: string
           description: string
           image_url: string
+          image_url_tablet: string | null
+          image_url_mobile: string | null
           primary_cta_label: string
           primary_cta_url: string
           secondary_cta_label: string

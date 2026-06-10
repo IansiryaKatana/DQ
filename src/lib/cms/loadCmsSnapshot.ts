@@ -106,6 +106,8 @@ export async function loadCmsSnapshot(): Promise<CmsSnapshot> {
             highlightWord: heroRes.data.highlight_word,
             description: heroRes.data.description,
             imageUrl: heroRes.data.image_url,
+            imageUrlTablet: heroRes.data.image_url_tablet,
+            imageUrlMobile: heroRes.data.image_url_mobile,
             primaryCtaLabel: heroRes.data.primary_cta_label,
             primaryCtaUrl: heroRes.data.primary_cta_url,
             secondaryCtaLabel: heroRes.data.secondary_cta_label,
