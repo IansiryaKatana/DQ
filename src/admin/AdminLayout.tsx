@@ -37,7 +37,7 @@ export function AdminLayout() {
           <h1 className="text-2xl font-bold">Admin access required</h1>
           <p className="text-white/70">
             {canBootstrap
-              ? 'You are signed in, but this account is not linked in dq_admin_users yet. Finish setup to activate owner access.'
+              ? 'You are signed in, but this account is not linked as an admin yet. Finish setup to activate owner access.'
               : 'This account is signed in but is not registered as an active admin. Ask an owner or admin to create your account.'}
           </p>
           {session?.user ? (

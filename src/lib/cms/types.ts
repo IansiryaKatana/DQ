@@ -64,6 +64,14 @@ export type DonationProduct = {
   ctaUrl: string
   kind: 'product' | 'quick'
   sortOrder: number
+  requiresShipping?: boolean
+  impactStatement?: string | null
+  minAmount?: number | null
+  maxQuantity?: number
+}
+
+export type BlogPostDetail = BlogPost & {
+  bodyHtml: string
 }
 
 export type StoryPoster = {
@@ -136,6 +144,91 @@ export type FooterSettings = {
 
 export type SiteSettings = Record<string, string>
 
+export type TrustBlock = {
+  id: string
+  key: string
+  title: string
+  bodyHtml: string
+  extra?: Record<string, unknown> | null
+  sortOrder: number
+}
+
+export type TrustContent = {
+  blocks: TrustBlock[]
+  byKey: Record<string, TrustBlock>
+}
+
+export type QuranEdition = {
+  id: string
+  slug: string
+  language: string
+  featuredImageUrl: string
+  pdfUrl?: string | null
+  audioUrl?: string | null
+  sortOrder: number
+}
+
+export type Book = {
+  id: string
+  slug: string
+  title: string
+  excerpt: string
+  coverImageUrl: string
+  /** Optional 16:9 image for listing cards; falls back to coverImageUrl when empty. */
+  cardCoverImageUrl?: string | null
+  category: string
+  authorName: string
+  authorAvatar?: string | null
+  publishedAt: string
+  readTime?: string | null
+  sortOrder: number
+}
+
+export type BookDetail = Book & {
+  bodyHtml: string
+}
+
+export type FeaturedVideo = {
+  id: string
+  slug: string
+  title: string
+  description: string
+  thumbnailUrl: string
+  videoType: 'upload' | 'youtube'
+  videoUrl: string
+  duration?: string | null
+  sortOrder: number
+}
+
+export type DistributorFormPayload = {
+  title: string
+  firstName: string
+  lastName: string
+  companyName: string
+  email: string
+  website: string
+  addressLine1: string
+  addressLine2: string
+  city: string
+  country: string
+  stateProvince: string
+  zipPostalCode: string
+  primaryPhone: string
+  secondaryPhone: string
+  hearAboutUs: string
+  contactReason: string
+  channelDescription: string
+  distributingCountry: string
+  distributingArea: string
+  storageLocation: string
+  distributeTo: string
+  raisingFunds: string
+  approximateQuantity: string
+  whyDistribute: string
+  yearsInBusiness: string
+  companyDescription: string
+}
+
 export type CmsSnapshot = {
   mode: 'live' | 'static'
   navigation: NavLink[]
@@ -152,4 +245,5 @@ export type CmsSnapshot = {
   quranWikiArticles: QuranWikiArticle[]
   footer: FooterSettings
   siteSettings: SiteSettings
+  trust: TrustContent
 }

@@ -1,11 +1,51 @@
 import staticCms from '#/data/static-cms.json'
+import staticTrust from '#/data/static-trust.json'
 import { getSupabase } from '#/integrations/supabase/client'
-import type { CmsSnapshot } from './types'
+import type { CmsSnapshot, DonationProduct, TrustBlock, TrustContent } from './types'
+
+function indexTrustBlocks(blocks: TrustBlock[]): TrustContent {
+  const byKey: Record<string, TrustBlock> = {}
+  for (const block of blocks) byKey[block.key] = block
+  return { blocks, byKey }
+}
+
+function staticTrustContent(): TrustContent {
+  return indexTrustBlocks(staticTrust.blocks as TrustBlock[])
+}
+
+function mapDonationProduct(
+  r: Record<string, unknown>,
+  kind: 'product' | 'quick',
+): DonationProduct {
+  return {
+    id: r.id as string,
+    slug: r.slug as string,
+    title: r.title as string,
+    description: r.description as string,
+    imageUrl: r.image_url as string,
+    price: r.price as number | null,
+    currency: r.currency as string | null,
+    category: r.category as string | null,
+    stockStatus: r.stock_status as string | null,
+    ctaLabel: (r.cta_label as string) ?? 'DONATE NOW',
+    ctaUrl: (r.cta_url as string) ?? '/donate',
+    kind,
+    sortOrder: r.sort_order as number,
+    requiresShipping: (r.requires_shipping as boolean) ?? false,
+    impactStatement: (r.impact_statement as string) ?? null,
+    minAmount: (r.min_amount as number) ?? null,
+    maxQuantity: (r.max_quantity as number) ?? 99,
+  }
+}
+
+function filterNavigation<T extends { href: string }>(links: T[]): T[] {
+  return links.filter((l) => l.href !== '/order-free-qurans')
+}
 
 function staticSnapshot(): CmsSnapshot {
   return {
     mode: 'static',
-    navigation: staticCms.navigation,
+    navigation: filterNavigation(staticCms.navigation),
     hero: staticCms.hero,
     whatsInside: staticCms.whatsInside,
     ventureSection: staticCms.ventureSection,
@@ -19,6 +59,7 @@ function staticSnapshot(): CmsSnapshot {
     quranWikiArticles: staticCms.quranWikiArticles,
     footer: staticCms.footer,
     siteSettings: staticCms.siteSettings,
+    trust: staticTrustContent(),
   }
 }
 
@@ -52,6 +93,7 @@ export async function loadCmsSnapshot(): Promise<CmsSnapshot> {
       wikiArticlesRes,
       footerRes,
       settingsRes,
+      trustRes,
     ] = await Promise.all([
       sb.from('dq_navigation_links').select('*').eq('is_active', true).order('sort_order'),
       sb.from('dq_hero_content').select('*').eq('is_active', true).limit(1).maybeSingle(),
@@ -67,9 +109,10 @@ export async function loadCmsSnapshot(): Promise<CmsSnapshot> {
       sb.from('dq_quran_wiki_articles').select('*').eq('status', 'published').order('published_at', { ascending: false }).limit(3),
       sb.from('dq_footer_settings').select('*').eq('is_active', true).limit(1).maybeSingle(),
       sb.from('dq_site_settings').select('*'),
+      sb.from('dq_trust_blocks').select('*').eq('is_active', true).order('sort_order'),
     ])
 
-    const responses = [navRes, heroRes, insideRes, ventureSectionRes, ventureImagesRes, productsRes, storiesRes, articlesRes, authorsRes, promoRes, wikiRes, wikiArticlesRes, footerRes, settingsRes]
+    const responses = [navRes, heroRes, insideRes, ventureSectionRes, ventureImagesRes, productsRes, storiesRes, articlesRes, authorsRes, promoRes, wikiRes, wikiArticlesRes, footerRes, settingsRes, trustRes]
     const errors = responses.map((r) => r.error).filter(Boolean)
 
     if (import.meta.env.DEV && errors.length > 0) {
@@ -88,15 +131,17 @@ export async function loadCmsSnapshot(): Promise<CmsSnapshot> {
 
     return {
       mode: 'live',
-      navigation: (navRes.data ?? []).map((r) => ({
-        id: r.id,
-        label: r.label,
-        href: r.href,
-        sortOrder: r.sort_order,
-        showInHeader: r.show_in_header,
-        showInFooter: r.show_in_footer,
-        footerGroup: r.footer_group,
-      })),
+      navigation: (navRes.data ?? [])
+        .filter((r) => r.is_active && r.href !== '/order-free-qurans')
+        .map((r) => ({
+          id: r.id,
+          label: r.label,
+          href: r.href,
+          sortOrder: r.sort_order,
+          showInHeader: r.show_in_header,
+          showInFooter: r.show_in_footer,
+          footerGroup: r.footer_group,
+        })),
       hero: heroRes.data
         ? {
             id: heroRes.data.id,
@@ -143,38 +188,10 @@ export async function loadCmsSnapshot(): Promise<CmsSnapshot> {
       })),
       donationProducts: (productsRes.data ?? [])
         .filter((r) => r.kind === 'product')
-        .map((r) => ({
-          id: r.id,
-          slug: r.slug,
-          title: r.title,
-          description: r.description,
-          imageUrl: r.image_url,
-          price: r.price,
-          currency: r.currency,
-          category: r.category,
-          stockStatus: r.stock_status,
-          ctaLabel: r.cta_label,
-          ctaUrl: r.cta_url,
-          kind: 'product' as const,
-          sortOrder: r.sort_order,
-        })),
+        .map((r) => mapDonationProduct(r, 'product')),
       quickDonations: (productsRes.data ?? [])
         .filter((r) => r.kind === 'quick')
-        .map((r) => ({
-          id: r.id,
-          slug: r.slug,
-          title: r.title,
-          description: r.description,
-          imageUrl: r.image_url,
-          price: r.price,
-          currency: r.currency,
-          category: r.category,
-          stockStatus: r.stock_status,
-          ctaLabel: r.cta_label,
-          ctaUrl: r.cta_url,
-          kind: 'quick' as const,
-          sortOrder: r.sort_order,
-        })),
+        .map((r) => mapDonationProduct(r, 'quick')),
       stories: (storiesRes.data ?? []).map((r) => ({
         id: r.id,
         title: r.title,
@@ -192,7 +209,7 @@ export async function loadCmsSnapshot(): Promise<CmsSnapshot> {
           excerpt: r.excerpt,
           coverImageUrl: r.cover_image_url,
           category: r.category,
-          authorName: author?.name ?? 'dq Team',
+          authorName: author?.name ?? 'Donate Quran Team',
           authorAvatar: author?.avatar_url,
           publishedAt: r.published_at ?? r.created_at ?? new Date().toISOString(),
           readTime: r.read_time,
@@ -223,7 +240,7 @@ export async function loadCmsSnapshot(): Promise<CmsSnapshot> {
           excerpt: r.excerpt,
           coverImageUrl: r.cover_image_url,
           category: r.category,
-          authorName: author?.name ?? 'dq Team',
+          authorName: author?.name ?? 'Donate Quran Team',
           authorAvatar: author?.avatar_url,
           publishedAt: r.published_at ?? r.created_at ?? new Date().toISOString(),
           readTime: r.read_time,
@@ -244,6 +261,18 @@ export async function loadCmsSnapshot(): Promise<CmsSnapshot> {
           }
         : fallback.footer,
       siteSettings: settings,
+      trust: trustRes.data?.length
+        ? indexTrustBlocks(
+            trustRes.data.map((r) => ({
+              id: r.id,
+              key: r.key,
+              title: r.title,
+              bodyHtml: r.body_html,
+              extra: (r.extra as Record<string, unknown>) ?? {},
+              sortOrder: r.sort_order,
+            })),
+          )
+        : fallback.trust,
     }
   } catch {
     return staticSnapshot()

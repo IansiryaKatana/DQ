@@ -10,11 +10,14 @@ BEGIN;
 -- Site settings
 -- -----------------------------------------------------------------------------
 INSERT INTO dq_site_settings (key, value) VALUES
-  ('site_name', 'dq'),
+  ('site_name', 'Donate Quran'),
   ('primary_color', '#F4B000'),
   ('donate_url', '/donate'),
-  ('app_store_url', 'https://apps.apple.com'),
-  ('play_store_url', 'https://play.google.com/store'),
+  ('app_store_url', 'https://apps.apple.com/us/app/donate-quran/id1080811194'),
+  ('play_store_url', 'https://play.google.com/store/apps/details?id=com.donatequran'),
+  ('logo_light_url', '/images/logo-light.png'),
+  ('logo_dark_url', '/images/logo-dark.png'),
+  ('favicon_url', '/favicon.png'),
   ('tagline', 'Faith. Knowledge. Impact.'),
   ('meta_description', 'Donate Qur''an — placing sacred knowledge in hands worldwide through donation, distribution, and education.')
 ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now();
@@ -26,13 +29,13 @@ INSERT INTO dq_navigation_links (id, label, href, sort_order, is_active, show_in
   ('10010001-0000-4000-8000-000000000001', 'Home',               '/',                  1,  true, true, true, 'quick_links'),
   ('10010001-0000-4000-8000-000000000002', 'About us',           '/about',             2,  true, true, true, 'quick_links'),
   ('10010001-0000-4000-8000-000000000003', 'Donate',             '/donate',            3,  true, true, true, 'quick_links'),
-  ('10010001-0000-4000-8000-000000000004', 'Order Free Qurans',  '/order-free-qurans', 4,  true, true, true, 'quick_links'),
-  ('10010001-0000-4000-8000-000000000005', 'Distribute',         '/distribute',        5,  true, true, true, 'quick_links'),
-  ('10010001-0000-4000-8000-000000000006', 'Quran',              '/quran',             6,  true, true, true, 'resources'),
-  ('10010001-0000-4000-8000-000000000007', 'Books',              '/books',             7,  true, true, true, 'resources'),
-  ('10010001-0000-4000-8000-000000000008', 'Articles',           '/articles',          8,  true, true, true, 'resources'),
-  ('10010001-0000-4000-8000-000000000009', 'Videos',             '/videos',            9,  true, true, true, 'resources'),
-  ('10010001-0000-4000-8000-000000000010', 'Contact Us',         '/contact',           10, true, true, true, 'quick_links')
+  ('10010001-0000-4000-8000-000000000004', 'Order Free Qurans',  '/order-free-qurans', 4,  false, false, false, 'quick_links'),
+  ('10010001-0000-4000-8000-000000000005', 'Distribute',         '/distribute',        4,  true, true, true, 'quick_links'),
+  ('10010001-0000-4000-8000-000000000006', 'Quran',              '/quran',             5,  true, true, true, 'resources'),
+  ('10010001-0000-4000-8000-000000000007', 'Books',              '/books',             6,  true, true, true, 'resources'),
+  ('10010001-0000-4000-8000-000000000008', 'Articles',           '/articles',          7,  true, true, true, 'resources'),
+  ('10010001-0000-4000-8000-000000000009', 'Videos',             '/videos',            8,  true, true, true, 'resources'),
+  ('10010001-0000-4000-8000-000000000010', 'Contact Us',         '/contact',           9,  true, true, true, 'quick_links')
 ON CONFLICT (id) DO UPDATE SET
   label = EXCLUDED.label, href = EXCLUDED.href, sort_order = EXCLUDED.sort_order,
   is_active = EXCLUDED.is_active,
@@ -45,7 +48,6 @@ WHERE id NOT IN (
   '10010001-0000-4000-8000-000000000001',
   '10010001-0000-4000-8000-000000000002',
   '10010001-0000-4000-8000-000000000003',
-  '10010001-0000-4000-8000-000000000004',
   '10010001-0000-4000-8000-000000000005',
   '10010001-0000-4000-8000-000000000006',
   '10010001-0000-4000-8000-000000000007',
@@ -184,7 +186,7 @@ ON CONFLICT (id) DO UPDATE SET
 -- Authors (4 — shared across 8 articles)
 -- -----------------------------------------------------------------------------
 INSERT INTO dq_authors (id, name, avatar_url, bio) VALUES
-  ('a0010001-0000-4000-8000-000000000001', 'DQ Staff',      NULL, 'Official Donate Qur''an editorial team.'),
+  ('a0010001-0000-4000-8000-000000000001', 'Donate Quran Staff',      NULL, 'Official Donate Qur''an editorial team.'),
   ('a0010001-0000-4000-8000-000000000002', 'Amina Hassan',  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop', 'Writer and community educator focused on daily Qur''an practice.'),
   ('a0010001-0000-4000-8000-000000000003', 'Omar Farouk',   'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop', 'Impact correspondent covering global distribution stories.'),
   ('a0010001-0000-4000-8000-000000000004', 'Fatima Ali',    'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop', 'Volunteer coordinator and outreach specialist.')
@@ -212,7 +214,7 @@ INSERT INTO dq_articles (id, slug, title, excerpt, cover_image_url, category, au
     'From packing Qur''ans to community outreach, volunteers are the heartbeat of our mission. Here is how you can get involved.',
     'https://images.unsplash.com/photo-1589998059171-988d887df646?w=800&h=500&fit=crop',
     'NEW', 'a0010001-0000-4000-8000-000000000004',
-    '<p>Volunteering with DQ connects you directly to families receiving their first copy. No experience needed — just compassion and commitment.</p>',
+    '<p>Volunteering with Donate Quran connects you directly to families receiving their first copy. No experience needed — just compassion and commitment.</p>',
     '6 min read', 'published', '2026-01-12T10:00:00Z'
   ),
   (
@@ -365,17 +367,17 @@ WHERE id IN (
 -- -----------------------------------------------------------------------------
 INSERT INTO dq_footer_settings (id, about_text, email, phone, address, copyright, developer_credit, social_links, is_active) VALUES (
   '11111111-1111-1111-1111-111111111105',
-  'dq is a faith-based charity dedicated to placing the Qur''an in the hands of people worldwide through donation, distribution, and education.',
+  'Donate Quran is a faith-based charity dedicated to placing the Qur''an in the hands of people worldwide through donation, distribution, and education.',
   'info@donatequran.org',
   '+1 (800) 555-0199',
   '123 Charity Lane, Suite 100, New York, NY 10001',
   '© 2026 Donate Qur''an. All rights reserved.',
   'Developed with care for the Ummah',
   '[
-    {"label": "Facebook",  "href": "https://facebook.com"},
-    {"label": "Instagram", "href": "https://instagram.com"},
-    {"label": "YouTube",   "href": "https://youtube.com"},
-    {"label": "X",         "href": "https://x.com"}
+    {"label": "Facebook",  "href": "https://www.facebook.com/DonateQuran"},
+    {"label": "Instagram", "href": "https://www.instagram.com/donatequran/"},
+    {"label": "X",         "href": "https://x.com/DonateQuran"},
+    {"label": "YouTube",   "href": "https://www.youtube.com/channel/UCupzcEvI3cDAsyZV7uuNLvQ"}
   ]'::jsonb,
   true
 ) ON CONFLICT (id) DO UPDATE SET

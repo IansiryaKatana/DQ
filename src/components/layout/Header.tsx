@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'motion/react'
 import type { NavLink } from '#/lib/cms/types'
 import { Logo } from './Logo'
 import { HeaderActions } from './HeaderActions'
+import { GiftCartButton } from '#/components/commerce/GiftCartButton'
+import { AccountButton } from '#/components/layout/AccountButton'
 import { cn } from '#/lib/utils'
 
 type HeaderProps = {
@@ -12,11 +14,20 @@ type HeaderProps = {
   appStoreUrl?: string
   playStoreUrl?: string
   donateUrl?: string
+  logoLightUrl?: string
+  logoDarkUrl?: string
 }
 
 const headerX = 'px-5 md:px-8 lg:px-10 xl:px-12'
 
-export function Header({ links, appStoreUrl, playStoreUrl, donateUrl = '/donate' }: HeaderProps) {
+export function Header({
+  links,
+  appStoreUrl,
+  playStoreUrl,
+  donateUrl = '/donate',
+  logoLightUrl,
+  logoDarkUrl,
+}: HeaderProps) {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const pathname = useRouterState({ select: (s) => s.location.pathname })
@@ -41,7 +52,7 @@ export function Header({ links, appStoreUrl, playStoreUrl, donateUrl = '/donate'
     <header className={cn('sticky top-0 z-50 w-full bg-white transition-shadow', scrolled && 'shadow-md')}>
       <div className={cn('w-full border-b border-dq-border/50', headerX)}>
         <div className="grid h-[72px] w-full grid-cols-[auto_1fr_auto] items-center gap-3 lg:gap-4">
-          <Logo className="shrink-0" />
+          <Logo className="shrink-0" lightSrc={logoLightUrl} darkSrc={logoDarkUrl} />
 
           <div className="relative hidden min-w-0 lg:block">
             <div
@@ -72,6 +83,8 @@ export function Header({ links, appStoreUrl, playStoreUrl, donateUrl = '/donate'
           </div>
 
           <div className="col-start-3 flex shrink-0 items-center justify-self-end gap-2">
+            <GiftCartButton />
+            <AccountButton className="hidden sm:inline-flex" />
             <HeaderActions
               appStoreUrl={appStoreUrl}
               playStoreUrl={playStoreUrl}

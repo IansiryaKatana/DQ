@@ -9,6 +9,9 @@ import { RichTextEditor } from './components/RichTextEditor'
 import { AdminTablePagination } from './components/AdminTablePagination'
 import { useAdminTablePagination } from './useAdminTablePagination'
 import { adminTable, adminTd, adminTh } from './adminClassNames'
+import { AdminSelect } from './components/AdminSelect'
+import { ADMIN_STATUS_OPTIONS } from './adminSelectOptions'
+import { resolveSlugFromLabel } from '#/lib/slug'
 import { cn } from '#/lib/utils'
 
 type Row = Database['public']['Tables']['dq_articles']['Row']
@@ -50,16 +53,18 @@ export function AdminArticles() {
   }
 
   async function saveModal() {
-    if (!draft?.title || !draft.slug) {
-      setSaveErr('Title and slug are required.')
+    if (!draft?.title) {
+      setSaveErr('Title is required.')
       return
     }
     setBusy(true)
     setSaveErr(null)
     try {
+      const existing = rows.find((row) => row.id === draft.id)
       const row = {
         ...draft,
         id: draft.id ?? crypto.randomUUID(),
+        slug: resolveSlugFromLabel(draft.title, existing?.title, existing?.slug),
         status: draft.status ?? 'draft',
         category: draft.category ?? 'Blog',
         excerpt: draft.excerpt ?? '',
@@ -247,13 +252,9 @@ export function AdminArticles() {
       >
         {draft ? (
           <div className="grid gap-4 md:grid-cols-2">
-            <label className="block space-y-2">
+            <label className="block space-y-2 md:col-span-2">
               <span className="admin-label">Title</span>
               <input className="admin-input" value={draft.title ?? ''} onChange={(e) => setDraft({ ...draft, title: e.target.value })} />
-            </label>
-            <label className="block space-y-2">
-              <span className="admin-label">Slug</span>
-              <input className="admin-input" value={draft.slug ?? ''} onChange={(e) => setDraft({ ...draft, slug: e.target.value })} />
             </label>
             <label className="block space-y-2 md:col-span-2">
               <span className="admin-label">Excerpt</span>
@@ -267,10 +268,11 @@ export function AdminArticles() {
             />
             <label className="block space-y-2">
               <span className="admin-label">Status</span>
-              <select className="admin-input" value={draft.status ?? 'draft'} onChange={(e) => setDraft({ ...draft, status: e.target.value })}>
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-              </select>
+              <AdminSelect
+                value={draft.status ?? 'draft'}
+                onValueChange={(status) => setDraft({ ...draft, status })}
+                options={ADMIN_STATUS_OPTIONS}
+              />
             </label>
             <label className="block space-y-2">
               <span className="admin-label">Read time</span>

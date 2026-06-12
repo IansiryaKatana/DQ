@@ -6,9 +6,11 @@ import { Logo } from './Logo'
 type FooterProps = {
   footer: FooterSettings
   links: NavLink[]
+  logoLightUrl?: string
+  logoDarkUrl?: string
 }
 
-export function Footer({ footer, links }: FooterProps) {
+export function Footer({ footer, links, logoLightUrl, logoDarkUrl }: FooterProps) {
   const quickLinks = links.filter((l) => l.showInFooter && l.footerGroup === 'quick_links')
   const resources = links.filter((l) => l.showInFooter && l.footerGroup === 'resources')
 
@@ -16,7 +18,7 @@ export function Footer({ footer, links }: FooterProps) {
     <footer className="bg-dq-black text-white">
       <Container className="grid gap-10 py-16 md:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-4">
-          <Logo variant="dark" />
+          <Logo variant="dark" lightSrc={logoLightUrl} darkSrc={logoDarkUrl} />
           <p className="type-body max-w-xs text-white/70">{footer.aboutText}</p>
         </div>
 

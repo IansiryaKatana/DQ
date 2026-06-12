@@ -1,0 +1,76 @@
+import type { DonationProduct, TrustContent } from '#/lib/cms/types'
+import { PageHero } from '#/components/layout/PageHero'
+import { DonationCtaBanner } from '#/components/layout/DonationCtaBanner'
+import { Container } from '#/components/ui/container'
+import { ResponsiveCardGrid } from '#/components/ui/responsive-card-grid'
+import { SectionHeading } from '#/components/ui/section-heading'
+import { DonationCard } from '#/components/cards/DonationCard'
+import { QuickDonationCard } from '#/components/cards/QuickDonationCard'
+import { WhyDonateSection } from '#/components/sections/trust/WhyDonateSection'
+import { BankPaymentSection } from '#/components/sections/trust/BankPaymentSection'
+import { TrustHtmlSection } from '#/components/sections/trust/TrustHtmlSection'
+
+type DonatePageProps = {
+  products: DonationProduct[]
+  quickDonations: DonationProduct[]
+  trust: TrustContent
+}
+
+export function DonatePage({ products, quickDonations, trust }: DonatePageProps) {
+  return (
+    <>
+      <PageHero
+        eyebrow="Give"
+        title="Choose your"
+        highlight="Gift"
+        description="Select a sponsorship or Qur'an package below. Every gift you add places sacred knowledge in the hands of someone seeking guidance."
+        variant="cream"
+      />
+
+      {trust.byKey.hundred_percent_promise ? (
+        <TrustHtmlSection block={trust.byKey.hundred_percent_promise} variant="light" />
+      ) : null}
+
+      {products.length > 0 ? (
+        <section className="bg-dq-cream/40 py-16 md:py-24">
+          <Container>
+            <SectionHeading title="Sponsorship" highlight="Packages" className="mb-10" />
+            <ResponsiveCardGrid
+              items={products}
+              getKey={(product) => product.id}
+              renderItem={(product) => <DonationCard product={product} />}
+              gapClass="gap-6"
+              carouselLabel="sponsorship packages"
+            />
+          </Container>
+        </section>
+      ) : null}
+
+      {quickDonations.length > 0 ? (
+        <section className="bg-white py-16 md:py-24">
+          <Container>
+            <SectionHeading title="Quick" highlight="Donation" className="mb-10" />
+            <ResponsiveCardGrid
+              items={quickDonations}
+              getKey={(product) => product.id}
+              renderItem={(product) => <QuickDonationCard product={product} />}
+              gapClass="gap-8"
+              carouselLabel="quick donations"
+            />
+          </Container>
+        </section>
+      ) : null}
+
+      <WhyDonateSection trust={trust} />
+
+      {trust.byKey.bank_payment ? <BankPaymentSection block={trust.byKey.bank_payment} /> : null}
+
+      <DonationCtaBanner
+        title="Not sure where to start?"
+        description="A single Qur'an sponsorship is the most direct way to make an impact. Your gift reaches someone ready to learn."
+        ctaLabel="SPONSOR ONE QUR'AN"
+        ctaHref="/donate/single-quran-request"
+      />
+    </>
+  )
+}

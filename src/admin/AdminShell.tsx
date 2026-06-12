@@ -14,9 +14,15 @@ const navItems = [
   { to: '/backend/products', label: 'Products' },
   { to: '/backend/stories', label: 'Stories' },
   { to: '/backend/articles', label: 'Articles' },
+  { to: '/backend/books', label: 'Books' },
+  { to: '/backend/quran-editions', label: "Qur'an Editions" },
+  { to: '/backend/videos', label: 'Videos' },
   { to: '/backend/quran-wiki', label: "Qur'an Wiki" },
+  { to: '/backend/trust-content', label: 'Trust Content' },
   { to: '/backend/venture', label: 'Venture Gallery' },
-  { to: '/backend/site', label: 'Site & Footer' },
+  { to: '/backend/donations', label: 'Donations' },
+  { to: '/backend/submissions', label: 'Submissions' },
+  { to: '/backend/settings', label: 'Settings' },
 ]
 
 function AdminHeader({ onOpenSidebar }: { onOpenSidebar: () => void }) {
@@ -72,7 +78,7 @@ function AdminShellInner() {
       >
         <div className="mb-8 flex shrink-0 items-center justify-between">
           <Link to="/" className="text-xl font-extrabold">
-            <span className="text-white">dq</span> <span className="text-dq-gold">CMS</span>
+            <span className="text-white">Donate Quran</span> <span className="text-dq-gold">CMS</span>
           </Link>
           <button type="button" className="md:hidden" onClick={() => setOpen(false)} aria-label="Close sidebar">
             <X className="h-5 w-5" />

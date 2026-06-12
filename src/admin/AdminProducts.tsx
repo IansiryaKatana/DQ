@@ -8,6 +8,8 @@ import { ImageUploadField } from './components/ImageUploadField'
 import { AdminTablePagination } from './components/AdminTablePagination'
 import { useAdminTablePagination } from './useAdminTablePagination'
 import { adminTable, adminTd, adminTh } from './adminClassNames'
+import { AdminSelect } from './components/AdminSelect'
+import { resolveSlugFromLabel } from '#/lib/slug'
 import { cn } from '#/lib/utils'
 
 type Row = Database['public']['Tables']['dq_donation_products']['Row']
@@ -88,14 +90,20 @@ export function AdminProducts() {
   }
 
   async function saveModal() {
-    if (!draft?.title || !draft.slug || !draft.image_url) {
-      setSaveErr('Title, slug, and image are required.')
+    if (!draft?.title || !draft.image_url) {
+      setSaveErr('Title and image are required.')
       return
     }
     setBusy(true)
     setSaveErr(null)
     try {
-      await persistRows([draft as Row])
+      const existing = rows.find((row) => row.id === draft.id)
+      await persistRows([
+        {
+          ...draft,
+          slug: resolveSlugFromLabel(draft.title, existing?.title, existing?.slug),
+        } as Row,
+      ])
       setDraft(null)
     } catch (e) {
       setSaveErr(e instanceof Error ? e.message : 'Could not save product.')
@@ -327,13 +335,9 @@ export function AdminProducts() {
       >
         {draft ? (
           <div className="grid gap-4 md:grid-cols-2">
-            <label className="block space-y-2">
+            <label className="block space-y-2 md:col-span-2">
               <span className="admin-label">Title</span>
               <input className="admin-input" value={draft.title ?? ''} onChange={(e) => setDraft({ ...draft, title: e.target.value })} />
-            </label>
-            <label className="block space-y-2">
-              <span className="admin-label">Slug</span>
-              <input className="admin-input" value={draft.slug ?? ''} onChange={(e) => setDraft({ ...draft, slug: e.target.value })} />
             </label>
             <label className="block space-y-2 md:col-span-2">
               <span className="admin-label">Description</span>
@@ -347,13 +351,11 @@ export function AdminProducts() {
             />
             <label className="block space-y-2">
               <span className="admin-label">Kind</span>
-              <select className="admin-input" value={draft.kind ?? 'product'} onChange={(e) => setDraft({ ...draft, kind: e.target.value })}>
-                {kindOptions.map((kind) => (
-                  <option key={kind} value={kind}>
-                    {kindLabel(kind)}
-                  </option>
-                ))}
-              </select>
+              <AdminSelect
+                value={draft.kind ?? 'product'}
+                onValueChange={(kind) => setDraft({ ...draft, kind })}
+                options={kindOptions.map((kind) => ({ value: kind, label: kindLabel(kind) }))}
+              />
             </label>
             <label className="block space-y-2">
               <span className="admin-label">Price</span>

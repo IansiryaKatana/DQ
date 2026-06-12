@@ -3,6 +3,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { useAdminAuth } from '#/contexts/AdminAuthContext'
 import { createAdminUser } from '#/lib/admin/createAdminUser'
 import type { SignupAdminRole } from '#/lib/admin/adminUserApi'
+import { AdminSelect } from './components/AdminSelect'
 import '#/admin/admin-theme.css'
 
 export function AdminSignup() {
@@ -183,16 +184,16 @@ export function AdminSignup() {
               )}
               <label className="block space-y-2">
                 <span className="admin-label">Role</span>
-                <select
-                  className="admin-input"
+                <AdminSelect
                   value={role}
-                  onChange={(e) => setRole(e.target.value as SignupAdminRole)}
-                >
-                  {bootstrapNewAccountMode || completeSetupMode || adminProfile?.role === 'owner' ? (
-                    <option value="owner">Owner</option>
-                  ) : null}
-                  <option value="admin">Admin</option>
-                </select>
+                  onValueChange={(value) => setRole(value as SignupAdminRole)}
+                  options={[
+                    ...(bootstrapNewAccountMode || completeSetupMode || adminProfile?.role === 'owner'
+                      ? [{ value: 'owner', label: 'Owner' }]
+                      : []),
+                    { value: 'admin', label: 'Admin' },
+                  ]}
+                />
               </label>
               {error ? <p className="text-sm text-red-400">{error}</p> : null}
               {message ? <p className="text-sm text-emerald-400">{message}</p> : null}

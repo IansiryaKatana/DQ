@@ -3,13 +3,12 @@
     { "id": "1", "label": "Home", "href": "/", "sortOrder": 1, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" },
     { "id": "2", "label": "About us", "href": "/about", "sortOrder": 2, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" },
     { "id": "3", "label": "Donate", "href": "/donate", "sortOrder": 3, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" },
-    { "id": "4", "label": "Order Free Qurans", "href": "/order-free-qurans", "sortOrder": 4, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" },
-    { "id": "5", "label": "Distribute", "href": "/distribute", "sortOrder": 5, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" },
-    { "id": "6", "label": "Quran", "href": "/quran", "sortOrder": 6, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
-    { "id": "7", "label": "Books", "href": "/books", "sortOrder": 7, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
-    { "id": "8", "label": "Articles", "href": "/articles", "sortOrder": 8, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
-    { "id": "9", "label": "Videos", "href": "/videos", "sortOrder": 9, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
-    { "id": "10", "label": "Contact Us", "href": "/contact", "sortOrder": 10, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" }
+    { "id": "5", "label": "Distribute", "href": "/distribute", "sortOrder": 4, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" },
+    { "id": "6", "label": "Quran", "href": "/quran", "sortOrder": 5, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
+    { "id": "7", "label": "Books", "href": "/books", "sortOrder": 6, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
+    { "id": "8", "label": "Articles", "href": "/articles", "sortOrder": 7, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
+    { "id": "9", "label": "Videos", "href": "/videos", "sortOrder": 8, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
+    { "id": "10", "label": "Contact Us", "href": "/contact", "sortOrder": 9, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" }
   ],
   "hero": {
     "id": "hero-1",
@@ -59,28 +58,32 @@
       "description": "Request one copy for yourself or someone in need.",
       "imageUrl": "https://images.unsplash.com/photo-1609599006353-e6a9e0c121ff?w=600&h=400&fit=crop",
       "price": 15, "currency": "USD", "category": "Request", "stockStatus": "Available",
-      "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/single", "kind": "product", "sortOrder": 1
+      "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/single-quran-request", "kind": "product", "sortOrder": 1,
+      "requiresShipping": true, "impactStatement": "Provides 1 Qur'an to a family in need"
     },
     {
       "id": "p2", "slug": "quran-english-translation", "title": "The Qur'an: English Translation",
       "description": "Premium English translation edition for daily reading.",
       "imageUrl": "https://images.unsplash.com/photo-1589998059171-988d887df646?w=600&h=400&fit=crop",
       "price": 25, "currency": "USD", "category": "Product", "stockStatus": "In Stock",
-      "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/translation", "kind": "product", "sortOrder": 2
+      "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/quran-english-translation", "kind": "product", "sortOrder": 2,
+      "requiresShipping": true, "impactStatement": "Delivers a premium English translation Mushaf"
     },
     {
       "id": "p3", "slug": "quran-project-app", "title": "The Qur'an Project App",
       "description": "Support our digital platform for learning and reflection.",
       "imageUrl": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=400&fit=crop",
       "price": null, "currency": "USD", "category": "Digital", "stockStatus": "Free Access",
-      "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/app", "kind": "product", "sortOrder": 3
+      "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/quran-project-app", "kind": "product", "sortOrder": 3,
+      "requiresShipping": false, "impactStatement": "Supports our digital Qur'an learning platform"
     },
     {
       "id": "p4", "slug": "bulk-pallet-order", "title": "Bulk Pallet Order",
       "description": "Sponsor a full pallet of Qur'ans for mass distribution.",
       "imageUrl": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=400&fit=crop",
       "price": 2500, "currency": "USD", "category": "Bulk", "stockStatus": "By Request",
-      "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/bulk", "kind": "product", "sortOrder": 4
+      "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/bulk-pallet-order", "kind": "product", "sortOrder": 4,
+      "requiresShipping": false, "impactStatement": "Sponsors a full pallet — approximately 500 Qur'ans distributed"
     }
   ],
   "quickDonations": [
@@ -88,19 +91,22 @@
       "id": "q1", "slug": "flagship-sponsorship", "title": "Flagship Sponsorship",
       "description": "Become a flagship partner and fund large-scale Qur'an distribution campaigns across multiple regions.",
       "imageUrl": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=500&fit=crop",
-      "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/flagship", "kind": "quick", "sortOrder": 1
+      "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/flagship-sponsorship", "kind": "quick", "sortOrder": 1,
+      "impactStatement": "Funds large-scale distribution campaigns across multiple regions"
     },
     {
       "id": "q2", "slug": "mushaf-print", "title": "Mushaf Print",
       "description": "Fund the printing of new Mushaf editions for communities waiting for accessible copies.",
       "imageUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=500&fit=crop",
-      "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/mushaf", "kind": "quick", "sortOrder": 2
+      "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/mushaf-print", "kind": "quick", "sortOrder": 2,
+      "impactStatement": "Funds printing of new Mushaf editions for waiting communities"
     },
     {
       "id": "q3", "slug": "marketing-outreach", "title": "Marketing & Outreach",
       "description": "Help us reach more people through campaigns, events, and educational content.",
       "imageUrl": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=500&fit=crop",
-      "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/marketing", "kind": "quick", "sortOrder": 3
+      "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/marketing-outreach", "kind": "quick", "sortOrder": 3,
+      "impactStatement": "Expands our reach through campaigns and educational content"
     }
   ],
   "stories": [
@@ -177,24 +183,27 @@
   ],
   "footer": {
     "id": "footer-1",
-    "aboutText": "dq is a faith-based charity dedicated to placing the Qur'an in the hands of people worldwide through donation, distribution, and education.",
+    "aboutText": "Donate Quran is a faith-based charity dedicated to placing the Qur'an in the hands of people worldwide through donation, distribution, and education.",
     "email": "info@donatequran.org",
     "phone": "+1 (800) 555-0199",
     "address": "123 Charity Lane, Suite 100, New York, NY 10001",
     "copyright": "© 2026 Donate Qur'an. All rights reserved.",
     "developerCredit": "Developed with care for the Ummah",
     "socialLinks": [
-      { "label": "Facebook", "href": "https://facebook.com" },
-      { "label": "Instagram", "href": "https://instagram.com" },
-      { "label": "YouTube", "href": "https://youtube.com" },
-      { "label": "X", "href": "https://x.com" }
+      { "label": "Facebook", "href": "https://www.facebook.com/DonateQuran" },
+      { "label": "Instagram", "href": "https://www.instagram.com/donatequran/" },
+      { "label": "X", "href": "https://x.com/DonateQuran" },
+      { "label": "YouTube", "href": "https://www.youtube.com/channel/UCupzcEvI3cDAsyZV7uuNLvQ" }
     ]
   },
   "siteSettings": {
-    "site_name": "dq",
+    "site_name": "Donate Quran",
     "primary_color": "#F4B000",
     "donate_url": "/donate",
-    "app_store_url": "https://apps.apple.com",
-    "play_store_url": "https://play.google.com/store"
+    "app_store_url": "https://apps.apple.com/us/app/donate-quran/id1080811194",
+    "play_store_url": "https://play.google.com/store/apps/details?id=com.donatequran",
+    "logo_light_url": "/images/logo-light.png",
+    "logo_dark_url": "/images/logo-dark.png",
+    "favicon_url": "/favicon.png"
   }
 }

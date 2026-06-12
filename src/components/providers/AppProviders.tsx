@@ -1,7 +1,9 @@
 import { useRouterState } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { AdminAuthProvider } from '#/contexts/AdminAuthContext'
+import { DonorAuthProvider } from '#/contexts/DonorAuthContext'
 import { CmsProvider } from '#/contexts/CmsContext'
+import { GiftCartProvider } from '#/contexts/GiftCartContext'
 import { FloatingActionBubbleHost } from '#/components/layout/FloatingActionBubbleHost'
 
 export function AppProviders({ children }: { children: ReactNode }) {
@@ -10,10 +12,14 @@ export function AppProviders({ children }: { children: ReactNode }) {
 
   return (
     <AdminAuthProvider>
-      <CmsProvider enabled={!isAdmin}>
-        {children}
-        <FloatingActionBubbleHost />
-      </CmsProvider>
+      <DonorAuthProvider>
+        <GiftCartProvider>
+          <CmsProvider enabled={!isAdmin}>
+            {children}
+            <FloatingActionBubbleHost />
+          </CmsProvider>
+        </GiftCartProvider>
+      </DonorAuthProvider>
     </AdminAuthProvider>
   )
 }

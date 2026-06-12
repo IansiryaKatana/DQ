@@ -13,6 +13,8 @@ const buttonVariants = cva(
         ghost: 'bg-transparent text-dq-black hover:bg-dq-cream',
         link: 'type-body rounded-none bg-transparent p-0 normal-case tracking-normal text-dq-gold hover:underline',
         outline: 'border-2 border-dq-gold bg-transparent text-dq-black hover:bg-dq-gold/10',
+        outlineOnDark:
+          'border-2 border-dq-gold bg-white text-dq-black hover:bg-white hover:text-dq-gold',
       },
       size: {
         sm: 'h-9 px-4',

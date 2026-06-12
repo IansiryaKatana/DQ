@@ -16,12 +16,7 @@ const donateButtonClass =
 export function HeaderActions({ appStoreUrl, playStoreUrl, donateUrl = '/donate', className }: HeaderActionsProps) {
   return (
     <div className={cn('flex shrink-0 items-center gap-2', className)}>
-      <div className="2xl:hidden">
-        <StoreDownloadButtons appStoreUrl={appStoreUrl} playStoreUrl={playStoreUrl} variant="icon" />
-      </div>
-      <div className="hidden 2xl:block">
-        <StoreDownloadButtons appStoreUrl={appStoreUrl} playStoreUrl={playStoreUrl} variant="full" />
-      </div>
+      <StoreDownloadButtons appStoreUrl={appStoreUrl} playStoreUrl={playStoreUrl} />
 
       <Link to={donateUrl} className={cn(donateButtonClass, 'w-10 px-0 2xl:hidden')} aria-label="Donate with PayPal">
         <PayPalIcon className="h-[1.125rem] w-[1.125rem]" />

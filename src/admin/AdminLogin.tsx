@@ -33,7 +33,7 @@ export function AdminLogin() {
     <div className="admin-auth-page flex min-h-screen items-center justify-center p-4">
       <div className="admin-panel w-full max-w-md p-6 shadow-sm">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-dq-black">dq Admin</h1>
+          <h1 className="text-2xl font-bold text-dq-black">Donate Quran Admin</h1>
           <Link to="/" className="text-sm text-dq-gold hover:underline">
             Back to site
           </Link>

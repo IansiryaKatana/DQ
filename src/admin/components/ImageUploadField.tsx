@@ -8,6 +8,7 @@ type ImageUploadFieldProps = {
   onChange: (value: string) => void
   folder: string
   accept?: string
+  hint?: string
 }
 
 export function ImageUploadField({
@@ -16,6 +17,7 @@ export function ImageUploadField({
   onChange,
   folder,
   accept = 'image/jpeg,image/png,image/webp,image/gif',
+  hint,
 }: ImageUploadFieldProps) {
   const inputId = useId()
   const fileRef = useRef<HTMLInputElement>(null)
@@ -83,6 +85,7 @@ export function ImageUploadField({
             ) : null}
           </div>
           {error ? <p className="text-sm text-red-400">{error}</p> : null}
+          {hint ? <p className="admin-muted text-xs">{hint}</p> : null}
           <p className="admin-muted text-xs">Uploads go to Supabase Storage (`dq-cms-media`). You can still paste an external URL.</p>
         </div>
       </div>

@@ -17,7 +17,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'dq — Donate Qur\'an' },
+      { title: 'Donate Quran' },
       { name: 'description', content: 'Faith. Knowledge. Impact. Donate Qur\'ans and support global distribution.' },
     ],
     links: [
