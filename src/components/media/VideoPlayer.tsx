@@ -1,18 +1,18 @@
 import type { FeaturedVideo } from '#/lib/cms/types'
+import { extractYouTubeVideoId, youTubeEmbedUrl } from '#/lib/media/youtube'
 import { cn } from '#/lib/utils'
-
-function youtubeEmbedUrl(url: string) {
-  if (url.includes('embed/')) return url
-  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/)
-  return match ? `https://www.youtube.com/embed/${match[1]}` : url
-}
 
 export function VideoPlayer({ video, className }: { video: FeaturedVideo; className?: string }) {
   if (video.videoType === 'youtube') {
+    const youTubeId = extractYouTubeVideoId(video.videoUrl)
+    const embedSrc = youTubeId
+      ? youTubeEmbedUrl(youTubeId, { controls: true })
+      : video.videoUrl
+
     return (
       <div className={cn('aspect-video overflow-hidden rounded-2xl bg-black', className)}>
         <iframe
-          src={youtubeEmbedUrl(video.videoUrl)}
+          src={embedSrc}
           title={video.title}
           className="h-full w-full"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

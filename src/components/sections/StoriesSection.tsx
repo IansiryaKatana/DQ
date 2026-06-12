@@ -13,6 +13,7 @@ export function StoriesSection({ stories }: { stories: StoryPoster[] }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false, dragFree: true })
   const [canPrev, setCanPrev] = useState(false)
   const [canNext, setCanNext] = useState(false)
+  const [activeStoryId, setActiveStoryId] = useState<string | null>(null)
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return
@@ -22,12 +23,15 @@ export function StoriesSection({ stories }: { stories: StoryPoster[] }) {
 
   useEffect(() => {
     if (!emblaApi) return
+    const stopActiveStory = () => setActiveStoryId(null)
     onSelect()
     emblaApi.on('select', onSelect)
     emblaApi.on('reInit', onSelect)
+    emblaApi.on('scroll', stopActiveStory)
     return () => {
       emblaApi.off('select', onSelect)
       emblaApi.off('reInit', onSelect)
+      emblaApi.off('scroll', stopActiveStory)
     }
   }, [emblaApi, onSelect])
 
@@ -53,7 +57,12 @@ export function StoriesSection({ stories }: { stories: StoryPoster[] }) {
         <div ref={emblaRef} className="overflow-hidden">
           <div className="flex gap-4">
             {stories.map((story) => (
-              <StoryCard key={story.id} story={story} />
+              <StoryCard
+                key={story.id}
+                story={story}
+                isPlaying={activeStoryId === story.id}
+                onPlayChange={(playing) => setActiveStoryId(playing ? story.id : null)}
+              />
             ))}
           </div>
         </div>

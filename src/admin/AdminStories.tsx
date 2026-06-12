@@ -8,6 +8,7 @@ import { ImageUploadField } from './components/ImageUploadField'
 import { AdminTablePagination } from './components/AdminTablePagination'
 import { useAdminTablePagination } from './useAdminTablePagination'
 import { adminTable, adminTd, adminTh } from './adminClassNames'
+import { isAutoYouTubePoster, resolveStoryPosterForSave, resolveStoryPosterUrl } from '#/lib/media/youtube'
 import { cn } from '#/lib/utils'
 
 type Row = Database['public']['Tables']['dq_story_posters']['Row']
@@ -49,10 +50,18 @@ export function AdminStories() {
   }
 
   async function saveModal() {
-    if (!draft?.title || !draft.image_url) {
-      setSaveErr('Title and poster image are required.')
+    if (!draft?.title?.trim() || !draft.video_url?.trim()) {
+      setSaveErr('Title and video URL are required.')
       return
     }
+
+    const imageUrl = resolveStoryPosterForSave(draft.video_url, draft.image_url)
+
+    if (!imageUrl) {
+      setSaveErr('Upload a poster image for non-YouTube videos, or use a YouTube Shorts URL.')
+      return
+    }
+
     setBusy(true)
     setSaveErr(null)
     try {
@@ -60,6 +69,7 @@ export function AdminStories() {
         {
           ...draft,
           id: draft.id ?? crypto.randomUUID(),
+          image_url: imageUrl,
           published: draft.published ?? true,
           is_active: draft.is_active ?? true,
           sort_order: draft.sort_order ?? rows.length + 1,
@@ -135,7 +145,7 @@ export function AdminStories() {
 
   useAdminPageHeader({
     title: 'Story posters',
-    description: 'Vertical story carousel cards.',
+    description: 'Vertical short-form cards. Add a YouTube Shorts URL for in-card playback.',
     actions: headerActions,
   })
 
@@ -197,8 +207,12 @@ export function AdminStories() {
                       onClick={() => setDraft(row)}
                       title="Edit story"
                     >
-                      {row.image_url ? (
-                        <img src={row.image_url} alt="" className="h-12 w-12 object-cover" />
+                      {row.video_url || row.image_url ? (
+                        <img
+                          src={resolveStoryPosterUrl({ imageUrl: row.image_url, videoUrl: row.video_url })}
+                          alt=""
+                          className="h-12 w-12 object-cover"
+                        />
                       ) : (
                         <div className="admin-muted flex h-12 w-12 items-center justify-center text-[10px]">No image</div>
                       )}
@@ -246,12 +260,33 @@ export function AdminStories() {
               <span className="admin-label">Title</span>
               <input className="admin-input" value={draft.title ?? ''} onChange={(e) => setDraft({ ...draft, title: e.target.value })} />
             </label>
+            <label className="block space-y-2">
+              <span className="admin-label">YouTube Shorts / video URL</span>
+              <input
+                className="admin-input"
+                value={draft.video_url ?? ''}
+                onChange={(e) =>
+                  setDraft({
+                    ...draft,
+                    video_url: e.target.value,
+                    image_url: isAutoYouTubePoster(draft.image_url) ? '' : draft.image_url,
+                  })
+                }
+                placeholder="https://youtube.com/shorts/..."
+              />
+              <span className="admin-muted text-xs">
+                Thumbnail is pulled automatically from YouTube. Plays inside the card on hover or play tap.
+              </span>
+            </label>
             <ImageUploadField
-              label="Poster image"
+              label="Custom poster (optional)"
               folder="story-posters"
               value={draft.image_url ?? ''}
               onChange={(v) => setDraft({ ...draft, image_url: v })}
             />
+            <span className="admin-muted block text-xs">
+              Leave empty for YouTube Shorts — the video snapshot is used instead.
+            </span>
             <label className="block space-y-2">
               <span className="admin-label">Link URL</span>
               <input className="admin-input" value={draft.link_url ?? ''} onChange={(e) => setDraft({ ...draft, link_url: e.target.value })} />
