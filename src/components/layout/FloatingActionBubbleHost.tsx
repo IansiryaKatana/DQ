@@ -3,10 +3,15 @@ import { useCms } from '#/contexts/CmsContext'
 import { FloatingActionBubble } from './FloatingActionBubble'
 
 export function FloatingActionBubbleHost() {
-  const isAdmin = useRouterState({ select: (s) => s.location.pathname.startsWith('/backend') })
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
   const { data } = useCms()
 
-  if (isAdmin) return null
+  if (pathname.startsWith('/backend')) return null
 
-  return <FloatingActionBubble donateUrl={data?.siteSettings.donate_url ?? '/donate'} />
+  return (
+    <FloatingActionBubble
+      key="floating-donate"
+      donateUrl={data?.siteSettings.donate_url ?? '/donate'}
+    />
+  )
 }

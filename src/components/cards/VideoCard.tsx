@@ -3,10 +3,10 @@ import { Play } from 'lucide-react'
 import { motion } from 'motion/react'
 import type { FeaturedVideo } from '#/lib/cms/types'
 
-export function VideoCard({ video }: { video: FeaturedVideo }) {
+export function VideoCard({ video, showDetails = true }: { video: FeaturedVideo; showDetails?: boolean }) {
   return (
     <motion.article whileHover={{ y: -4 }} className="group">
-      <Link to={`/videos/${video.slug}`} className="relative block overflow-hidden">
+      <Link to={`/videos/${video.slug}`} className="relative block overflow-hidden rounded-lg">
         <img
           src={video.thumbnailUrl}
           alt={video.title}
@@ -23,12 +23,14 @@ export function VideoCard({ video }: { video: FeaturedVideo }) {
           </span>
         ) : null}
       </Link>
-      <div className="mt-5 space-y-2">
-        <Link to={`/videos/${video.slug}`} className="block">
-          <h3 className="type-title line-clamp-1 text-dq-black transition-colors group-hover:text-dq-gold">{video.title}</h3>
-        </Link>
-        <p className="type-body line-clamp-2 text-dq-muted">{video.description}</p>
-      </div>
+      {showDetails ? (
+        <div className="mt-5 space-y-2">
+          <Link to={`/videos/${video.slug}`} className="block">
+            <h3 className="type-title line-clamp-1 text-dq-black transition-colors group-hover:text-dq-gold">{video.title}</h3>
+          </Link>
+          <p className="type-body line-clamp-2 text-dq-muted">{video.description}</p>
+        </div>
+      ) : null}
     </motion.article>
   )
 }

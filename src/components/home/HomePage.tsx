@@ -1,4 +1,4 @@
-import type { CmsSnapshot, PromoTile } from '#/lib/cms/types'
+import type { Book, CmsSnapshot, PromoTile } from '#/lib/cms/types'
 import { PublicLayout } from '#/components/layout/PublicLayout'
 import { HeroSection } from '#/components/sections/HeroSection'
 import { WhatsInsideSection } from '#/components/sections/WhatsInsideSection'
@@ -10,18 +10,18 @@ import { BlogPreviewSection } from '#/components/sections/BlogPreviewSection'
 import { QuranWikiBanner } from '#/components/sections/QuranWikiBanner'
 import { PromoTilesSection } from '#/components/sections/PromoTilesSection'
 
-function quranWikiGridTiles(articles: CmsSnapshot['quranWikiArticles']): PromoTile[] {
-  return articles.slice(0, 3).map((article, index) => ({
-    id: article.id,
-    title: article.title,
-    imageUrl: article.coverImageUrl,
-    linkUrl: `/quran-wiki/${article.slug}`,
+function bookGridTiles(books: Book[]): PromoTile[] {
+  return books.slice(0, 3).map((book, index) => ({
+    id: book.id,
+    title: book.title,
+    imageUrl: book.cardCoverImageUrl || book.coverImageUrl,
+    linkUrl: `/books/${book.slug}`,
     sortOrder: index + 1,
   }))
 }
 
-export function HomePage({ data }: { data: CmsSnapshot }) {
-  const wikiGridTiles = quranWikiGridTiles(data.quranWikiArticles)
+export function HomePage({ data, books }: { data: CmsSnapshot; books: Book[] }) {
+  const promoBookTiles = bookGridTiles(books)
 
   return (
     <PublicLayout data={data}>
@@ -35,7 +35,7 @@ export function HomePage({ data }: { data: CmsSnapshot }) {
       <QuickDonationSection products={data.quickDonations} />
       <BlogPreviewSection posts={data.blogPosts} />
       <QuranWikiBanner banner={data.quranWiki} />
-      <PromoTilesSection tiles={wikiGridTiles.length ? wikiGridTiles : data.promoTiles} />
+      <PromoTilesSection tiles={promoBookTiles.length ? promoBookTiles : data.promoTiles} />
     </PublicLayout>
   )
 }

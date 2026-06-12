@@ -1,13 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { HomePage } from '#/components/home/HomePage'
+import { loadAllBooks } from '#/lib/cms/loadBooks'
 import { loadCmsSnapshot } from '#/lib/cms/loadCmsSnapshot'
 
 export const Route = createFileRoute('/')({
-  loader: () => loadCmsSnapshot(),
+  loader: async () => {
+    const [data, books] = await Promise.all([loadCmsSnapshot(), loadAllBooks()])
+    return { data, books }
+  },
   component: IndexPage,
 })
 
 function IndexPage() {
-  const data = Route.useLoaderData()
-  return <HomePage data={data} />
+  const { data, books } = Route.useLoaderData()
+  return <HomePage data={data} books={books} />
 }

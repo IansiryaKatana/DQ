@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
 import type { FeaturedVideo } from '#/lib/cms/types'
 import { Container } from '#/components/ui/container'
+import { VideoCard } from '#/components/cards/VideoCard'
 import { VideoPlayer } from '#/components/media/VideoPlayer'
 import { DonationCtaBanner } from '#/components/layout/DonationCtaBanner'
 
@@ -27,11 +28,9 @@ export function VideoDetailPage({ video, related }: { video: FeaturedVideo; rela
         <section className="bg-white py-12">
           <Container>
             <h2 className="type-title mb-6 text-dq-black">More videos</h2>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
               {related.map((v) => (
-                <Link key={v.id} to={`/videos/${v.slug}`} className="type-body text-dq-gold hover:text-dq-black">
-                  {v.title}
-                </Link>
+                <VideoCard key={v.id} video={v} showDetails={false} />
               ))}
             </div>
           </Container>

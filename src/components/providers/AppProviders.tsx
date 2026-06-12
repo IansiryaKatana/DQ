@@ -16,7 +16,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
         <GiftCartProvider>
           <CmsProvider enabled={!isAdmin}>
             {children}
-            <FloatingActionBubbleHost />
+            {!isAdmin ? <FloatingActionBubbleHost /> : null}
           </CmsProvider>
         </GiftCartProvider>
       </DonorAuthProvider>
