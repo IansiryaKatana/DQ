@@ -4,6 +4,7 @@ import { PageHero } from '#/components/layout/PageHero'
 import { DonationCtaBanner } from '#/components/layout/DonationCtaBanner'
 import { Container } from '#/components/ui/container'
 import { BookCard } from '#/components/cards/BookCard'
+import { ExpandableGrid } from '#/components/ui/expandable-grid'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 
@@ -40,11 +41,14 @@ export function BooksPage({ books }: { books: Book[] }) {
           {filtered.length === 0 ? (
             <p className="type-body text-center text-dq-muted">No books published yet.</p>
           ) : (
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((book) => (
-                <BookCard key={book.id} book={book} />
-              ))}
-            </div>
+            <ExpandableGrid
+              key={category}
+              items={filtered}
+              getKey={(book) => book.id}
+              renderItem={(book) => <BookCard book={book} />}
+              initialCount={3}
+              batchSize={3}
+            />
           )}
         </Container>
       </section>

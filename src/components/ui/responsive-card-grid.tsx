@@ -17,6 +17,7 @@ type ResponsiveCardGridProps<T> = {
   renderItem: (item: T) => ReactNode
   gapClass?: string
   showMoreLabel?: string
+  showLessLabel?: string
   carouselLabel: string
   desktopColumns?: 3 | 4
   desktopBatchSize?: number
@@ -30,6 +31,7 @@ export function ResponsiveCardGrid<T>({
   renderItem,
   gapClass = 'gap-6',
   showMoreLabel = 'Show more',
+  showLessLabel = 'Show less',
   carouselLabel,
   desktopColumns = 3,
   desktopBatchSize = DEFAULT_DESKTOP_BATCH_SIZE,
@@ -43,6 +45,7 @@ export function ResponsiveCardGrid<T>({
 
   const visibleItems = items.slice(0, visibleCount)
   const hasMore = visibleCount < items.length
+  const canShowLess = visibleCount > desktopBatchSize
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return
@@ -125,15 +128,26 @@ export function ResponsiveCardGrid<T>({
             </div>
           ))}
         </div>
-        {hasMore ? (
-          <div className="mt-10 flex justify-center">
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => setVisibleCount((count) => Math.min(count + desktopBatchSize, items.length))}
-            >
-              {showMoreLabel}
-            </Button>
+        {hasMore || canShowLess ? (
+          <div className="mt-10 flex justify-center gap-4">
+            {hasMore ? (
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => setVisibleCount((count) => Math.min(count + desktopBatchSize, items.length))}
+              >
+                {showMoreLabel}
+              </Button>
+            ) : null}
+            {canShowLess ? (
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => setVisibleCount(desktopBatchSize)}
+              >
+                {showLessLabel}
+              </Button>
+            ) : null}
           </div>
         ) : null}
       </div>

@@ -2,6 +2,7 @@ import type { BlogPost } from '#/lib/cms/types'
 import { PageHero } from '#/components/layout/PageHero'
 import { DonationCtaBanner } from '#/components/layout/DonationCtaBanner'
 import { Container } from '#/components/ui/container'
+import { ExpandableGrid } from '#/components/ui/expandable-grid'
 import { BlogCard } from '#/components/cards/BlogCard'
 
 type ArticlesPageProps = {
@@ -24,11 +25,14 @@ export function ArticlesPage({ posts }: ArticlesPageProps) {
           {posts.length === 0 ? (
             <p className="type-body text-center text-dq-muted">No articles published yet.</p>
           ) : (
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-              {posts.map((post) => (
-                <BlogCard key={post.id} post={post} />
-              ))}
-            </div>
+            <ExpandableGrid
+              items={posts}
+              getKey={(post) => post.id}
+              renderItem={(post) => <BlogCard post={post} />}
+              initialCount={3}
+              batchSize={3}
+              gridClassName="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+            />
           )}
         </Container>
       </section>
