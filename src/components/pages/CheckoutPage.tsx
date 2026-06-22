@@ -25,7 +25,7 @@ type CheckoutPageProps = {
 export function CheckoutPage({ bankBlock, postageNote }: CheckoutPageProps) {
   const { cart, subtotal, itemCount } = useGiftCart()
   const { user, profile, session } = useDonorAuth()
-  const currency = cart.items[0]?.currency ?? 'USD'
+  const currency = cart.items[0]?.currency ?? 'GBP'
   const needsShipping = cart.items.some((i) => i.requiresShipping)
 
   const [donorName, setDonorName] = useState('')

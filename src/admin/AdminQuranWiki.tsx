@@ -4,6 +4,7 @@ import { getSupabase } from '#/integrations/supabase/client'
 import { useCms } from '#/contexts/CmsContext'
 import { useAdminPageHeader } from './AdminPageContext'
 import { AdminModal } from './components/AdminModal'
+import { AdminDeleteConfirmDialog } from './components/AdminDeleteConfirmDialog'
 import { ImageUploadField } from './components/ImageUploadField'
 import { RichTextEditor } from './components/RichTextEditor'
 import { AdminTablePagination } from './components/AdminTablePagination'
@@ -12,6 +13,7 @@ import { adminTable, adminTd, adminTh } from './adminClassNames'
 import { AdminSelect } from './components/AdminSelect'
 import { ADMIN_STATUS_OPTIONS } from './adminSelectOptions'
 import { resolveSlugFromLabel } from '#/lib/slug'
+import { useAdminDeleteConfirm } from './useAdminDeleteConfirm'
 import { cn } from '#/lib/utils'
 
 type ArticleRow = Database['public']['Tables']['dq_quran_wiki_articles']['Row']
@@ -26,6 +28,7 @@ export function AdminQuranWiki() {
   const [saveErr, setSaveErr] = useState<string | null>(null)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [busy, setBusy] = useState(false)
+  const deleteConfirm = useAdminDeleteConfirm({ singular: 'wiki article', plural: 'wiki articles' })
 
   const { page, setPage, totalPages, pageRows } = useAdminTablePagination(rows)
   const selectedCount = selected.size
@@ -114,8 +117,6 @@ export function AdminQuranWiki() {
 
   async function remove(ids: string[]) {
     if (!ids.length) return
-    const label = ids.length === 1 ? 'this wiki article' : `${ids.length} wiki articles`
-    if (!confirm(`Delete ${label}?`)) return
     const sb = getSupabase()
     if (!sb) return
     setBusy(true)
@@ -123,6 +124,7 @@ export function AdminQuranWiki() {
     try {
       const { error } = await sb.from('dq_quran_wiki_articles').delete().in('id', ids)
       if (error) throw new Error(error.message)
+      deleteConfirm.cancel()
       await refresh()
       await refetch()
     } catch (e) {
@@ -228,7 +230,7 @@ export function AdminQuranWiki() {
           <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void bulkSetStatus('draft')}>
             Unpublish
           </button>
-          <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void remove([...selected])}>
+          <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
             Delete selected
           </button>
         </div>
@@ -286,7 +288,7 @@ export function AdminQuranWiki() {
                       <button type="button" className="admin-btn-secondary" onClick={() => setDraft(row)}>
                         Edit
                       </button>
-                      <button type="button" className="admin-btn-secondary" onClick={() => void remove([row.id])}>
+                      <button type="button" className="admin-btn-secondary" onClick={() => deleteConfirm.request([row.id])}>
                         Delete
                       </button>
                     </div>
@@ -355,6 +357,13 @@ export function AdminQuranWiki() {
           </div>
         ) : null}
       </AdminModal>
+      <AdminDeleteConfirmDialog
+        open={deleteConfirm.open}
+        description={deleteConfirm.description}
+        busy={busy}
+        onCancel={deleteConfirm.cancel}
+        onConfirm={() => void remove(deleteConfirm.pendingIds)}
+      />
     </div>
   )
 }

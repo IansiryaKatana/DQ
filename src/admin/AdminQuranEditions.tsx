@@ -3,6 +3,7 @@ import { getSupabase } from '#/integrations/supabase/client'
 import { useCms } from '#/contexts/CmsContext'
 import { useAdminPageHeader } from './AdminPageContext'
 import { AdminModal } from './components/AdminModal'
+import { AdminDeleteConfirmDialog } from './components/AdminDeleteConfirmDialog'
 import { AdminTableImageCell } from './components/AdminTableImageCell'
 import { AdminTablePagination } from './components/AdminTablePagination'
 import { ImageUploadField } from './components/ImageUploadField'
@@ -10,6 +11,7 @@ import { MediaUploadField } from './components/MediaUploadField'
 import { useAdminTablePagination } from './useAdminTablePagination'
 import { resolveSlugFromLabel } from '#/lib/slug'
 import { adminTable, adminTd, adminTh } from './adminClassNames'
+import { useAdminDeleteConfirm } from './useAdminDeleteConfirm'
 import { cn } from '#/lib/utils'
 
 type Row = {
@@ -44,6 +46,7 @@ export function AdminQuranEditions() {
   const [saveErr, setSaveErr] = useState<string | null>(null)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [busy, setBusy] = useState(false)
+  const deleteConfirm = useAdminDeleteConfirm({ singular: 'edition', plural: 'editions' })
 
   const { page, setPage, totalPages, pageRows } = useAdminTablePagination(rows)
   const selectedCount = selected.size
@@ -104,8 +107,6 @@ export function AdminQuranEditions() {
 
   async function remove(ids: string[]) {
     if (!ids.length) return
-    const label = ids.length === 1 ? 'this edition' : `${ids.length} editions`
-    if (!confirm(`Delete ${label}?`)) return
     const sb = getSupabase()
     if (!sb) return
     setBusy(true)
@@ -114,6 +115,7 @@ export function AdminQuranEditions() {
       // @ts-expect-error dq_quran_editions — run migration 20260612130000
       const { error } = await sb.from('dq_quran_editions').delete().in('id', ids)
       if (error) throw new Error(error.message)
+      deleteConfirm.cancel()
       await refresh()
       await refetch()
     } catch (e) {
@@ -179,7 +181,7 @@ export function AdminQuranEditions() {
           <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void bulkSetPublished(false)}>
             Unpublish
           </button>
-          <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void remove([...selected])}>
+          <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
             Delete selected
           </button>
         </div>
@@ -232,7 +234,7 @@ export function AdminQuranEditions() {
                       <button type="button" className="admin-btn-secondary" onClick={() => setDraft(row)}>
                         Edit
                       </button>
-                      <button type="button" className="admin-btn-secondary" onClick={() => void remove([row.id])}>
+                      <button type="button" className="admin-btn-secondary" onClick={() => deleteConfirm.request([row.id])}>
                         Delete
                       </button>
                     </div>
@@ -288,6 +290,13 @@ export function AdminQuranEditions() {
           </div>
         ) : null}
       </AdminModal>
+      <AdminDeleteConfirmDialog
+        open={deleteConfirm.open}
+        description={deleteConfirm.description}
+        busy={busy}
+        onCancel={deleteConfirm.cancel}
+        onConfirm={() => void remove(deleteConfirm.pendingIds)}
+      />
     </div>
   )
 }

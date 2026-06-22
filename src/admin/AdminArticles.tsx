@@ -4,6 +4,7 @@ import { getSupabase } from '#/integrations/supabase/client'
 import { useCms } from '#/contexts/CmsContext'
 import { useAdminPageHeader } from './AdminPageContext'
 import { AdminModal } from './components/AdminModal'
+import { AdminDeleteConfirmDialog } from './components/AdminDeleteConfirmDialog'
 import { ImageUploadField } from './components/ImageUploadField'
 import { RichTextEditor } from './components/RichTextEditor'
 import { AdminTablePagination } from './components/AdminTablePagination'
@@ -12,6 +13,7 @@ import { adminTable, adminTd, adminTh } from './adminClassNames'
 import { AdminSelect } from './components/AdminSelect'
 import { ADMIN_STATUS_OPTIONS } from './adminSelectOptions'
 import { resolveSlugFromLabel } from '#/lib/slug'
+import { useAdminDeleteConfirm } from './useAdminDeleteConfirm'
 import { cn } from '#/lib/utils'
 
 type Row = Database['public']['Tables']['dq_articles']['Row']
@@ -24,6 +26,7 @@ export function AdminArticles() {
   const [saveErr, setSaveErr] = useState<string | null>(null)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [busy, setBusy] = useState(false)
+  const deleteConfirm = useAdminDeleteConfirm({ singular: 'article', plural: 'articles' })
 
   const { page, setPage, totalPages, pageRows } = useAdminTablePagination(rows)
   const selectedCount = selected.size
@@ -82,8 +85,6 @@ export function AdminArticles() {
 
   async function remove(ids: string[]) {
     if (!ids.length) return
-    const label = ids.length === 1 ? 'this article' : `${ids.length} articles`
-    if (!confirm(`Delete ${label}?`)) return
     const sb = getSupabase()
     if (!sb) return
     setBusy(true)
@@ -91,6 +92,7 @@ export function AdminArticles() {
     try {
       const { error } = await sb.from('dq_articles').delete().in('id', ids)
       if (error) throw new Error(error.message)
+      deleteConfirm.cancel()
       await refresh()
       await refetch()
     } catch (e) {
@@ -163,7 +165,7 @@ export function AdminArticles() {
           <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void bulkSetStatus('draft')}>
             Unpublish
           </button>
-          <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void remove([...selected])}>
+          <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
             Delete selected
           </button>
         </div>
@@ -221,7 +223,7 @@ export function AdminArticles() {
                       <button type="button" className="admin-btn-secondary" onClick={() => setDraft(row)}>
                         Edit
                       </button>
-                      <button type="button" className="admin-btn-secondary" onClick={() => void remove([row.id])}>
+                      <button type="button" className="admin-btn-secondary" onClick={() => deleteConfirm.request([row.id])}>
                         Delete
                       </button>
                     </div>
@@ -290,6 +292,13 @@ export function AdminArticles() {
           </div>
         ) : null}
       </AdminModal>
+      <AdminDeleteConfirmDialog
+        open={deleteConfirm.open}
+        description={deleteConfirm.description}
+        busy={busy}
+        onCancel={deleteConfirm.cancel}
+        onConfirm={() => void remove(deleteConfirm.pendingIds)}
+      />
     </div>
   )
 }

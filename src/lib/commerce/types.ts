@@ -24,7 +24,7 @@ export function productToCartItem(product: DonationProduct, quantity = 1): GiftC
     title: product.title,
     imageUrl: product.imageUrl,
     unitAmount: product.price ?? null,
-    currency: product.currency ?? 'USD',
+    currency: product.currency ?? 'GBP',
     quantity,
     requiresShipping: product.requiresShipping ?? false,
     impactStatement: product.impactStatement ?? null,

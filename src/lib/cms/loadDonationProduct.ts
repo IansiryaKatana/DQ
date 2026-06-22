@@ -10,7 +10,7 @@ function mapProductRow(r: Record<string, unknown>): DonationProduct {
     description: r.description as string,
     imageUrl: r.image_url as string,
     price: r.price as number | null,
-    currency: (r.currency as string) ?? 'USD',
+    currency: (r.currency as string) ?? 'GBP',
     category: r.category as string | null,
     stockStatus: r.stock_status as string | null,
     ctaLabel: (r.cta_label as string) ?? 'DONATE NOW',

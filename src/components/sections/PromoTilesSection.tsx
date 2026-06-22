@@ -11,8 +11,14 @@ const carouselSlideClass =
   'min-w-0 shrink-0 grow-0 pl-4 basis-[calc(100vw-2.5rem)] md:basis-[calc((100vw-3rem)/2)]'
 
 function PromoTileCard({ tile }: { tile: PromoTile }) {
+  const external = /^https?:\/\//i.test(tile.linkUrl)
+
   return (
-    <a href={tile.linkUrl} className="group relative block overflow-hidden rounded-2xl shadow-md">
+    <a
+      href={tile.linkUrl}
+      {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
+      className="group relative block overflow-hidden rounded-2xl shadow-md"
+    >
       <img src={tile.imageUrl} alt={tile.title} className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105 md:h-56" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
       <p className="type-title absolute bottom-4 left-4 right-4 text-white">{tile.title}</p>

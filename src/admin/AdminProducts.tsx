@@ -4,12 +4,14 @@ import { getSupabase } from '#/integrations/supabase/client'
 import { useCms } from '#/contexts/CmsContext'
 import { useAdminPageHeader } from './AdminPageContext'
 import { AdminModal } from './components/AdminModal'
+import { AdminDeleteConfirmDialog } from './components/AdminDeleteConfirmDialog'
 import { ImageUploadField } from './components/ImageUploadField'
 import { AdminTablePagination } from './components/AdminTablePagination'
 import { useAdminTablePagination } from './useAdminTablePagination'
 import { adminTable, adminTd, adminTh } from './adminClassNames'
 import { AdminSelect } from './components/AdminSelect'
 import { resolveSlugFromLabel } from '#/lib/slug'
+import { useAdminDeleteConfirm } from './useAdminDeleteConfirm'
 import { cn } from '#/lib/utils'
 
 type Row = Database['public']['Tables']['dq_donation_products']['Row']
@@ -31,7 +33,7 @@ const emptyRow = (kind = 'product'): Partial<Row> => ({
   sort_order: 0,
   cta_label: 'DONATE NOW',
   cta_url: '/donate',
-  currency: 'USD',
+  currency: 'GBP',
   description: '',
 })
 
@@ -43,6 +45,7 @@ export function AdminProducts() {
   const [saveErr, setSaveErr] = useState<string | null>(null)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [busy, setBusy] = useState(false)
+  const deleteConfirm = useAdminDeleteConfirm({ singular: 'product', plural: 'products' })
   const [activeKind, setActiveKind] = useState<'all' | string>('all')
 
   const kinds = useMemo(() => {
@@ -114,8 +117,6 @@ export function AdminProducts() {
 
   async function remove(ids: string[]) {
     if (!ids.length) return
-    const label = ids.length === 1 ? 'this product' : `${ids.length} products`
-    if (!confirm(`Delete ${label}?`)) return
     const sb = getSupabase()
     if (!sb) return
     setBusy(true)
@@ -123,6 +124,7 @@ export function AdminProducts() {
     try {
       const { error } = await sb.from('dq_donation_products').delete().in('id', ids)
       if (error) throw new Error(error.message)
+      deleteConfirm.cancel()
       await refresh()
       await refetch()
     } catch (e) {
@@ -238,7 +240,7 @@ export function AdminProducts() {
           <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void bulkSetPublished(false)}>
             Unpublish
           </button>
-          <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void remove([...selected])}>
+          <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
             Delete selected
           </button>
         </div>
@@ -304,7 +306,7 @@ export function AdminProducts() {
                       <button type="button" className="admin-btn-secondary" onClick={() => setDraft(row)}>
                         Edit
                       </button>
-                      <button type="button" className="admin-btn-secondary" onClick={() => void remove([row.id])}>
+                      <button type="button" className="admin-btn-secondary" onClick={() => deleteConfirm.request([row.id])}>
                         Delete
                       </button>
                     </div>
@@ -377,6 +379,13 @@ export function AdminProducts() {
           </div>
         ) : null}
       </AdminModal>
+      <AdminDeleteConfirmDialog
+        open={deleteConfirm.open}
+        description={deleteConfirm.description}
+        busy={busy}
+        onCancel={deleteConfirm.cancel}
+        onConfirm={() => void remove(deleteConfirm.pendingIds)}
+      />
     </div>
   )
 }

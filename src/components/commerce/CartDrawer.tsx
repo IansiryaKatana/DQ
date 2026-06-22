@@ -8,7 +8,7 @@ import { formatPrice } from '#/lib/utils'
 
 export function CartDrawer() {
   const { cart, drawerOpen, closeDrawer, subtotal, itemCount } = useGiftCart()
-  const currency = cart.items[0]?.currency ?? 'USD'
+  const currency = cart.items[0]?.currency ?? 'GBP'
 
   return (
     <Dialog.Root open={drawerOpen} onOpenChange={(open) => !open && closeDrawer()}>

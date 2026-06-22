@@ -4,10 +4,12 @@ import { getSupabase } from '#/integrations/supabase/client'
 import { useCms } from '#/contexts/CmsContext'
 import { useAdminPageHeader } from './AdminPageContext'
 import { AdminModal } from './components/AdminModal'
+import { AdminDeleteConfirmDialog } from './components/AdminDeleteConfirmDialog'
 import { ImageUploadField } from './components/ImageUploadField'
 import { AdminTablePagination } from './components/AdminTablePagination'
 import { useAdminTablePagination } from './useAdminTablePagination'
 import { adminTable, adminTd, adminTh } from './adminClassNames'
+import { useAdminDeleteConfirm } from './useAdminDeleteConfirm'
 import { cn } from '#/lib/utils'
 
 type ImageRow = Database['public']['Tables']['dq_venture_images']['Row']
@@ -22,6 +24,7 @@ export function AdminVenture() {
   const [saveErr, setSaveErr] = useState<string | null>(null)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [busy, setBusy] = useState(false)
+  const deleteConfirm = useAdminDeleteConfirm({ singular: 'image', plural: 'images' })
 
   const { page, setPage, totalPages, pageRows } = useAdminTablePagination(images)
   const selectedCount = selected.size
@@ -89,8 +92,6 @@ export function AdminVenture() {
 
   async function remove(ids: string[]) {
     if (!ids.length) return
-    const label = ids.length === 1 ? 'this image' : `${ids.length} images`
-    if (!confirm(`Delete ${label}?`)) return
     const sb = getSupabase()
     if (!sb) return
     setBusy(true)
@@ -98,6 +99,7 @@ export function AdminVenture() {
     try {
       const { error } = await sb.from('dq_venture_images').delete().in('id', ids)
       if (error) throw new Error(error.message)
+      deleteConfirm.cancel()
       await refresh()
       await refetch()
     } catch (e) {
@@ -176,7 +178,7 @@ export function AdminVenture() {
           <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void bulkSetActive(false)}>
             Deactivate
           </button>
-          <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void remove([...selected])}>
+          <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
             Delete selected
           </button>
         </div>
@@ -236,7 +238,7 @@ export function AdminVenture() {
                       <button type="button" className="admin-btn-secondary" onClick={() => setDraft(row)}>
                         Edit
                       </button>
-                      <button type="button" className="admin-btn-secondary" onClick={() => void remove([row.id])}>
+                      <button type="button" className="admin-btn-secondary" onClick={() => deleteConfirm.request([row.id])}>
                         Delete
                       </button>
                     </div>
@@ -293,6 +295,13 @@ export function AdminVenture() {
           </div>
         ) : null}
       </AdminModal>
+      <AdminDeleteConfirmDialog
+        open={deleteConfirm.open}
+        description={deleteConfirm.description}
+        busy={busy}
+        onCancel={deleteConfirm.cancel}
+        onConfirm={() => void remove(deleteConfirm.pendingIds)}
+      />
     </div>
   )
 }

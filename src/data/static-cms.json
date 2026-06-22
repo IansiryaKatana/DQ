@@ -57,7 +57,7 @@
       "id": "p1", "slug": "single-quran-request", "title": "Single Qur'an Request",
       "description": "Request one copy for yourself or someone in need.",
       "imageUrl": "https://images.unsplash.com/photo-1609599006353-e6a9e0c121ff?w=600&h=400&fit=crop",
-      "price": 15, "currency": "USD", "category": "Request", "stockStatus": "Available",
+      "price": 15, "currency": "GBP", "category": "Request", "stockStatus": "Available",
       "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/single-quran-request", "kind": "product", "sortOrder": 1,
       "requiresShipping": true, "impactStatement": "Provides 1 Qur'an to a family in need"
     },
@@ -65,7 +65,7 @@
       "id": "p2", "slug": "quran-english-translation", "title": "The Qur'an: English Translation",
       "description": "Premium English translation edition for daily reading.",
       "imageUrl": "https://images.unsplash.com/photo-1589998059171-988d887df646?w=600&h=400&fit=crop",
-      "price": 25, "currency": "USD", "category": "Product", "stockStatus": "In Stock",
+      "price": 25, "currency": "GBP", "category": "Product", "stockStatus": "In Stock",
       "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/quran-english-translation", "kind": "product", "sortOrder": 2,
       "requiresShipping": true, "impactStatement": "Delivers a premium English translation Mushaf"
     },
@@ -73,7 +73,7 @@
       "id": "p3", "slug": "quran-project-app", "title": "The Qur'an Project App",
       "description": "Support our digital platform for learning and reflection.",
       "imageUrl": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=400&fit=crop",
-      "price": null, "currency": "USD", "category": "Digital", "stockStatus": "Free Access",
+      "price": null, "currency": "GBP", "category": "Digital", "stockStatus": "Free Access",
       "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/quran-project-app", "kind": "product", "sortOrder": 3,
       "requiresShipping": false, "impactStatement": "Supports our digital Qur'an learning platform"
     },
@@ -81,7 +81,7 @@
       "id": "p4", "slug": "bulk-pallet-order", "title": "Bulk Pallet Order",
       "description": "Sponsor a full pallet of Qur'ans for mass distribution.",
       "imageUrl": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=400&fit=crop",
-      "price": 2500, "currency": "USD", "category": "Bulk", "stockStatus": "By Request",
+      "price": 2500, "currency": "GBP", "category": "Bulk", "stockStatus": "By Request",
       "ctaLabel": "DONATE NOW", "ctaUrl": "/donate/bulk-pallet-order", "kind": "product", "sortOrder": 4,
       "requiresShipping": false, "impactStatement": "Sponsors a full pallet — approximately 500 Qur'ans distributed"
     }

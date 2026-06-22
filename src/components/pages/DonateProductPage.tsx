@@ -16,7 +16,7 @@ type DonateProductPageProps = {
 
 export function DonateProductPage({ product, related }: DonateProductPageProps) {
   const [quantity, setQuantity] = useState(1)
-  const price = formatPrice(product.price ?? null, product.currency ?? 'USD')
+  const price = formatPrice(product.price ?? null, product.currency ?? 'GBP')
   const maxQty = product.maxQuantity ?? 99
 
   return (

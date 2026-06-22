@@ -15,7 +15,7 @@ type GiftCartPageProps = {
 
 export function GiftCartPage({ postageNote }: GiftCartPageProps) {
   const { cart, subtotal, itemCount } = useGiftCart()
-  const currency = cart.items[0]?.currency ?? 'USD'
+  const currency = cart.items[0]?.currency ?? 'GBP'
   const needsShipping = cart.items.some((i) => i.requiresShipping)
 
   return (

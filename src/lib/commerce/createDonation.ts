@@ -32,7 +32,7 @@ export async function createDonationRecord(input: CreateDonationInput): Promise<
   if (!admin) throw new Error('Server database configuration is missing.')
 
   const subtotal = input.items.reduce((sum, item) => sum + (item.unitAmount ?? 0) * item.quantity, 0)
-  const currency = (input.items[0]?.currency ?? 'USD').toUpperCase()
+  const currency = (input.items[0]?.currency ?? 'GBP').toUpperCase()
   const reference = donationReference()
 
   const { data, error } = await admin

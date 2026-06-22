@@ -5,7 +5,7 @@ import { AddToGiftButton } from '#/components/commerce/AddToGiftButton'
 import { formatPrice } from '#/lib/utils'
 
 export function DonationCard({ product }: { product: DonationProduct }) {
-  const price = formatPrice(product.price ?? null, product.currency ?? 'USD')
+  const price = formatPrice(product.price ?? null, product.currency ?? 'GBP')
   const detailHref = `/donate/${product.slug}`
 
   return (
