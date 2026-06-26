@@ -11,16 +11,14 @@ export function StoriesPage({ stories }: { stories: StoryPoster[] }) {
         eyebrow="Stories"
         title="Watch, learn"
         highlight="& be inspired"
-        description="Vertical story posters from our campaigns — real moments of Qur'an distribution and transformation."
+        description="Story moments from our campaigns — real Qur'an distribution and transformation in every circle."
         variant="cream"
       />
       <section className="bg-white py-16 md:py-24">
         <Container>
-          <div className="flex gap-4 overflow-x-auto pb-4">
+          <div className="flex flex-wrap items-center justify-center gap-5 md:gap-6">
             {stories.map((story) => (
-              <div key={story.id} className="w-[280px] shrink-0">
-                <StoryCard story={story} />
-              </div>
+              <StoryCard key={story.id} story={story} />
             ))}
           </div>
         </Container>

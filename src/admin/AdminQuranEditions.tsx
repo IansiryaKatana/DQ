@@ -20,7 +20,6 @@ type Row = {
   language: string
   featured_image_url: string
   pdf_url: string | null
-  audio_url: string | null
   sort_order: number
   is_active: boolean
   published: boolean
@@ -32,7 +31,6 @@ const empty = (): Row => ({
   language: '',
   featured_image_url: '',
   pdf_url: null,
-  audio_url: null,
   sort_order: 0,
   is_active: true,
   published: true,
@@ -70,8 +68,9 @@ export function AdminQuranEditions() {
   async function persistRows(items: Row[]) {
     const sb = getSupabase()
     if (!sb) return
+    const payload = items.map((item) => ({ ...item, audio_url: null }))
     // @ts-expect-error dq_quran_editions — run migration 20260612130000
-    const { error } = await sb.from('dq_quran_editions').upsert(items, { onConflict: 'id' })
+    const { error } = await sb.from('dq_quran_editions').upsert(payload, { onConflict: 'id' })
     if (error) throw new Error(error.message)
     await refresh()
     await refetch()
@@ -162,7 +161,7 @@ export function AdminQuranEditions() {
 
   useAdminPageHeader({
     title: "Qur'an editions",
-    description: 'Multilingual PDF and audio downloads.',
+    description: 'Multilingual PDF downloads.',
     actions: useMemo(() => [{ label: 'Add edition', onClick: () => setDraft(empty()) }], []),
   })
 
@@ -197,7 +196,6 @@ export function AdminQuranEditions() {
               <th className={cn(adminTh, 'w-20')}>Image</th>
               <th className={adminTh}>Language</th>
               <th className={adminTh}>PDF</th>
-              <th className={adminTh}>Audio</th>
               <th className={adminTh}>Order</th>
               <th className={adminTh}>Published</th>
               <th className={adminTh}>Actions</th>
@@ -206,7 +204,7 @@ export function AdminQuranEditions() {
           <tbody>
             {pageRows.length === 0 ? (
               <tr>
-                <td className={cn(adminTd, 'admin-muted py-10 text-center')} colSpan={8}>
+                <td className={cn(adminTd, 'admin-muted py-10 text-center')} colSpan={7}>
                   No editions yet.
                 </td>
               </tr>
@@ -226,7 +224,6 @@ export function AdminQuranEditions() {
                   </td>
                   <td className={adminTd}>{row.language}</td>
                   <td className={adminTd}>{row.pdf_url ? 'Yes' : '—'}</td>
-                  <td className={adminTd}>{row.audio_url ? 'Yes' : '—'}</td>
                   <td className={adminTd}>{row.sort_order}</td>
                   <td className={adminTd}>{row.published ? 'Yes' : 'No'}</td>
                   <td className={adminTd}>
@@ -275,8 +272,7 @@ export function AdminQuranEditions() {
             </label>
             <ImageUploadField label="Featured image" folder="quran-editions" value={draft.featured_image_url} onChange={(v) => setDraft({ ...draft, featured_image_url: v })} />
             <MediaUploadField label="PDF URL" folder="quran-editions/pdf" value={draft.pdf_url ?? ''} onChange={(v) => setDraft({ ...draft, pdf_url: v || null })} accept="application/pdf" />
-            <MediaUploadField label="Audio URL" folder="quran-editions/audio" value={draft.audio_url ?? ''} onChange={(v) => setDraft({ ...draft, audio_url: v || null })} accept="audio/*" />
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 md:col-span-2">
               <label className="flex items-center gap-2 text-sm">
                 <input type="checkbox" checked={draft.published} onChange={(e) => setDraft({ ...draft, published: e.target.checked })} />
                 Published

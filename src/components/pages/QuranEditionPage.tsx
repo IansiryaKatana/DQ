@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { ArrowLeft, Download, Headphones } from 'lucide-react'
+import { ArrowLeft, Download } from 'lucide-react'
 import type { QuranEdition } from '#/lib/cms/types'
 import { Container } from '#/components/ui/container'
 import { Button } from '#/components/ui/button'
@@ -26,29 +26,18 @@ export function QuranEditionPage({ edition }: { edition: QuranEdition }) {
             <div className="flex flex-col justify-center gap-5">
               <h1 className="type-headline text-dq-black">{edition.language}</h1>
               <p className="type-body text-dq-muted">
-                Read or download the Qur'an translation in {edition.language}. Use the buttons below to access PDF
-                and audio resources.
+                Read or download the Qur'an translation in {edition.language}.
               </p>
-              <div className="flex flex-wrap gap-3">
-                {edition.pdfUrl ? (
-                  <Button asChild variant="gold" size="lg">
-                    <a href={edition.pdfUrl} target="_blank" rel="noopener noreferrer">
-                      <Download className="h-4 w-4" />
-                      DOWNLOAD PDF
-                    </a>
-                  </Button>
-                ) : (
-                  <p className="type-body text-dq-muted">PDF coming soon for this language.</p>
-                )}
-                {edition.audioUrl ? (
-                  <Button asChild variant="outline" size="lg">
-                    <a href={edition.audioUrl} target="_blank" rel="noopener noreferrer">
-                      <Headphones className="h-4 w-4" />
-                      LISTEN
-                    </a>
-                  </Button>
-                ) : null}
-              </div>
+              {edition.pdfUrl ? (
+                <Button asChild variant="gold" size="lg" className="w-full sm:w-auto">
+                  <a href={edition.pdfUrl} target="_blank" rel="noopener noreferrer">
+                    <Download className="h-4 w-4" />
+                    DOWNLOAD PDF
+                  </a>
+                </Button>
+              ) : (
+                <p className="type-body text-dq-muted">PDF coming soon for this language.</p>
+              )}
             </div>
           </div>
         </Container>

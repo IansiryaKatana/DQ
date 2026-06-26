@@ -48,8 +48,10 @@ import { Route as BackendArticlesRouteImport } from './routes/backend/articles'
 import { Route as ArticlesSlugRouteImport } from './routes/articles/$slug'
 import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe-webhook'
 import { Route as ApiPaypalWebhookRouteImport } from './routes/api/paypal-webhook'
+import { Route as AccountResetPasswordRouteImport } from './routes/account/reset-password'
 import { Route as AccountRegisterRouteImport } from './routes/account/register'
 import { Route as AccountLoginRouteImport } from './routes/account/login'
+import { Route as AccountForgotPasswordRouteImport } from './routes/account/forgot-password'
 import { Route as AccountOrdersIndexRouteImport } from './routes/account/orders/index'
 import { Route as DonateCheckoutSuccessRouteImport } from './routes/donate/checkout/success'
 import { Route as DonateCheckoutPaypalReturnRouteImport } from './routes/donate/checkout/paypal-return'
@@ -251,6 +253,11 @@ const ApiPaypalWebhookRoute = ApiPaypalWebhookRouteImport.update({
   path: '/api/paypal-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountResetPasswordRoute = AccountResetPasswordRouteImport.update({
+  id: '/account/reset-password',
+  path: '/account/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccountRegisterRoute = AccountRegisterRouteImport.update({
   id: '/account/register',
   path: '/account/register',
@@ -259,6 +266,11 @@ const AccountRegisterRoute = AccountRegisterRouteImport.update({
 const AccountLoginRoute = AccountLoginRouteImport.update({
   id: '/account/login',
   path: '/account/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountForgotPasswordRoute = AccountForgotPasswordRouteImport.update({
+  id: '/account/forgot-password',
+  path: '/account/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountOrdersIndexRoute = AccountOrdersIndexRouteImport.update({
@@ -296,8 +308,10 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/distribute': typeof DistributeRoute
   '/order-free-qurans': typeof OrderFreeQuransRoute
+  '/account/forgot-password': typeof AccountForgotPasswordRoute
   '/account/login': typeof AccountLoginRoute
   '/account/register': typeof AccountRegisterRoute
+  '/account/reset-password': typeof AccountResetPasswordRoute
   '/api/paypal-webhook': typeof ApiPaypalWebhookRoute
   '/api/stripe-webhook': typeof ApiStripeWebhookRoute
   '/articles/$slug': typeof ArticlesSlugRoute
@@ -343,8 +357,10 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/distribute': typeof DistributeRoute
   '/order-free-qurans': typeof OrderFreeQuransRoute
+  '/account/forgot-password': typeof AccountForgotPasswordRoute
   '/account/login': typeof AccountLoginRoute
   '/account/register': typeof AccountRegisterRoute
+  '/account/reset-password': typeof AccountResetPasswordRoute
   '/api/paypal-webhook': typeof ApiPaypalWebhookRoute
   '/api/stripe-webhook': typeof ApiStripeWebhookRoute
   '/articles/$slug': typeof ArticlesSlugRoute
@@ -392,8 +408,10 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/distribute': typeof DistributeRoute
   '/order-free-qurans': typeof OrderFreeQuransRoute
+  '/account/forgot-password': typeof AccountForgotPasswordRoute
   '/account/login': typeof AccountLoginRoute
   '/account/register': typeof AccountRegisterRoute
+  '/account/reset-password': typeof AccountResetPasswordRoute
   '/api/paypal-webhook': typeof ApiPaypalWebhookRoute
   '/api/stripe-webhook': typeof ApiStripeWebhookRoute
   '/articles/$slug': typeof ArticlesSlugRoute
@@ -442,8 +460,10 @@ export interface FileRouteTypes {
     | '/contact'
     | '/distribute'
     | '/order-free-qurans'
+    | '/account/forgot-password'
     | '/account/login'
     | '/account/register'
+    | '/account/reset-password'
     | '/api/paypal-webhook'
     | '/api/stripe-webhook'
     | '/articles/$slug'
@@ -489,8 +509,10 @@ export interface FileRouteTypes {
     | '/contact'
     | '/distribute'
     | '/order-free-qurans'
+    | '/account/forgot-password'
     | '/account/login'
     | '/account/register'
+    | '/account/reset-password'
     | '/api/paypal-webhook'
     | '/api/stripe-webhook'
     | '/articles/$slug'
@@ -537,8 +559,10 @@ export interface FileRouteTypes {
     | '/contact'
     | '/distribute'
     | '/order-free-qurans'
+    | '/account/forgot-password'
     | '/account/login'
     | '/account/register'
+    | '/account/reset-password'
     | '/api/paypal-webhook'
     | '/api/stripe-webhook'
     | '/articles/$slug'
@@ -586,8 +610,10 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DistributeRoute: typeof DistributeRoute
   OrderFreeQuransRoute: typeof OrderFreeQuransRoute
+  AccountForgotPasswordRoute: typeof AccountForgotPasswordRoute
   AccountLoginRoute: typeof AccountLoginRoute
   AccountRegisterRoute: typeof AccountRegisterRoute
+  AccountResetPasswordRoute: typeof AccountResetPasswordRoute
   ApiPaypalWebhookRoute: typeof ApiPaypalWebhookRoute
   ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
   ArticlesSlugRoute: typeof ArticlesSlugRoute
@@ -882,6 +908,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPaypalWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account/reset-password': {
+      id: '/account/reset-password'
+      path: '/account/reset-password'
+      fullPath: '/account/reset-password'
+      preLoaderRoute: typeof AccountResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/account/register': {
       id: '/account/register'
       path: '/account/register'
@@ -894,6 +927,13 @@ declare module '@tanstack/react-router' {
       path: '/account/login'
       fullPath: '/account/login'
       preLoaderRoute: typeof AccountLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/forgot-password': {
+      id: '/account/forgot-password'
+      path: '/account/forgot-password'
+      fullPath: '/account/forgot-password'
+      preLoaderRoute: typeof AccountForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/account/orders/': {
@@ -1002,8 +1042,10 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DistributeRoute: DistributeRoute,
   OrderFreeQuransRoute: OrderFreeQuransRoute,
+  AccountForgotPasswordRoute: AccountForgotPasswordRoute,
   AccountLoginRoute: AccountLoginRoute,
   AccountRegisterRoute: AccountRegisterRoute,
+  AccountResetPasswordRoute: AccountResetPasswordRoute,
   ApiPaypalWebhookRoute: ApiPaypalWebhookRoute,
   ApiStripeWebhookRoute: ApiStripeWebhookRoute,
   ArticlesSlugRoute: ArticlesSlugRoute,

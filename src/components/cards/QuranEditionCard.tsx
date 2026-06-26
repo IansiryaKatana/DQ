@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { Download, Headphones } from 'lucide-react'
+import { Download } from 'lucide-react'
 import { motion } from 'motion/react'
 import type { QuranEdition } from '#/lib/cms/types'
 import { Button } from '#/components/ui/button'
@@ -20,34 +20,21 @@ export function QuranEditionCard({ edition }: { edition: QuranEdition }) {
             {edition.language}
           </h3>
         </Link>
-        <div className="mt-auto flex flex-nowrap gap-1.5">
-          {edition.pdfUrl ? (
+        {edition.pdfUrl ? (
+          <div className="mt-auto">
             <Button
               asChild
               variant="gold"
               size="sm"
-              className="h-7 gap-1 px-2 text-[0.625rem] tracking-[0.12em]"
+              className="h-7 w-full gap-1 px-2 text-[0.625rem] tracking-[0.12em]"
             >
               <a href={edition.pdfUrl} target="_blank" rel="noopener noreferrer">
                 <Download className="h-3 w-3 shrink-0" />
-                PDF
+                DOWNLOAD PDF
               </a>
             </Button>
-          ) : null}
-          {edition.audioUrl ? (
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className="h-7 gap-1 px-2 text-[0.625rem] tracking-[0.12em]"
-            >
-              <a href={edition.audioUrl} target="_blank" rel="noopener noreferrer">
-                <Headphones className="h-3 w-3 shrink-0" />
-                Audio
-              </a>
-            </Button>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
       </div>
     </motion.article>
   )

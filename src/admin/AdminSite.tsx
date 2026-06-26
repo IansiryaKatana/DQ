@@ -220,22 +220,6 @@ export function AdminSite() {
                       onChange={(e) => setFooter({ ...footer, email: e.target.value })}
                     />
                   </div>
-                  <div>
-                    <FieldLabel>Phone</FieldLabel>
-                    <input
-                      className="admin-input"
-                      value={footer.phone}
-                      onChange={(e) => setFooter({ ...footer, phone: e.target.value })}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <FieldLabel>Address</FieldLabel>
-                  <textarea
-                    className="admin-input min-h-16"
-                    value={footer.address}
-                    onChange={(e) => setFooter({ ...footer, address: e.target.value })}
-                  />
                 </div>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div>

@@ -23,6 +23,8 @@ type DonorAuthContextValue = {
   user: User | null
   profile: DonorProfile | null
   signIn: (email: string, password: string) => Promise<{ error?: string }>
+  requestPasswordReset: (email: string) => Promise<{ error?: string }>
+  updatePassword: (password: string) => Promise<{ error?: string }>
   signUp: (
     email: string,
     password: string,
@@ -94,6 +96,26 @@ export function DonorAuthProvider({ children }: { children: ReactNode }) {
     return {}
   }, [])
 
+  const requestPasswordReset = useCallback(async (email: string) => {
+    const sb = getSupabase()
+    if (!sb) return { error: 'Password reset is temporarily unavailable.' }
+
+    const redirectTo = `${window.location.origin}/account/reset-password`
+    const { error } = await sb.auth.resetPasswordForEmail(email.trim(), { redirectTo })
+    if (error) return { error: error.message }
+    return {}
+  }, [])
+
+  const updatePassword = useCallback(async (password: string) => {
+    const sb = getSupabase()
+    if (!sb) return { error: 'Password reset is temporarily unavailable.' }
+    if (password.length < 8) return { error: 'Password must be at least 8 characters.' }
+
+    const { error } = await sb.auth.updateUser({ password })
+    if (error) return { error: error.message }
+    return {}
+  }, [])
+
   const signUp = useCallback(async (email: string, password: string, fullName: string) => {
     const sb = getSupabase()
     if (!sb) return { error: 'Registration is temporarily unavailable.' }
@@ -129,11 +151,13 @@ export function DonorAuthProvider({ children }: { children: ReactNode }) {
       user: session?.user ?? null,
       profile,
       signIn,
+      requestPasswordReset,
+      updatePassword,
       signUp,
       signOut,
       refreshProfile,
     }),
-    [configured, loading, session, profile, signIn, signUp, signOut, refreshProfile],
+    [configured, loading, session, profile, signIn, requestPasswordReset, updatePassword, signUp, signOut, refreshProfile],
   )
 
   return <DonorAuthContext.Provider value={value}>{children}</DonorAuthContext.Provider>

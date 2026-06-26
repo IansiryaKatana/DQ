@@ -14,7 +14,6 @@ type ContactPageProps = {
 export function ContactPage({ footer }: ContactPageProps) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
   const [message, setMessage] = useState('')
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
 
@@ -32,7 +31,7 @@ export function ContactPage({ footer }: ContactPageProps) {
       form_type: 'contact',
       name,
       email,
-      phone: phone || null,
+      phone: null,
       message,
       payload: {},
     })
@@ -41,7 +40,6 @@ export function ContactPage({ footer }: ContactPageProps) {
     if (!error) {
       setName('')
       setEmail('')
-      setPhone('')
       setMessage('')
     }
   }
@@ -89,19 +87,6 @@ export function ContactPage({ footer }: ContactPageProps) {
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label htmlFor="contact-phone" className="type-label text-dq-black">
-                  Phone <span className="text-dq-muted">(optional)</span>
-                </label>
-                <input
-                  id="contact-phone"
-                  type="tel"
-                  placeholder="+1 (555) 000-0000"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className={formControlClass}
-                />
-              </div>
-              <div className="flex flex-col gap-2">
                 <label htmlFor="contact-message" className="type-label text-dq-black">
                   Message
                 </label>
@@ -136,18 +121,6 @@ export function ContactPage({ footer }: ContactPageProps) {
                     <a href={`mailto:${footer.email}`} className="hover:text-dq-gold">
                       {footer.email}
                     </a>
-                  </li>
-                  <li>
-                    <span className="type-label text-dq-black">Phone</span>
-                    <br />
-                    <a href={`tel:${footer.phone}`} className="hover:text-dq-gold">
-                      {footer.phone}
-                    </a>
-                  </li>
-                  <li>
-                    <span className="type-label text-dq-black">Address</span>
-                    <br />
-                    {footer.address}
                   </li>
                 </ul>
               </div>

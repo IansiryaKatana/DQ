@@ -164,7 +164,6 @@ export type QuranEdition = {
   language: string
   featuredImageUrl: string
   pdfUrl?: string | null
-  audioUrl?: string | null
   sortOrder: number
 }
 

@@ -27,11 +27,21 @@ function usePrefersHover() {
 
 type StoryCardProps = {
   story: StoryPoster
+  shape?: 'circle' | 'poster'
   isPlaying?: boolean
   onPlayChange?: (playing: boolean) => void
 }
 
-export function StoryCard({ story, isPlaying: isPlayingProp, onPlayChange }: StoryCardProps) {
+const shapeClasses = {
+  circle: 'h-[220px] w-[220px] rounded-full ring-2 ring-dq-gold/35 ring-offset-2 ring-offset-white md:h-[260px] md:w-[260px]',
+  poster: 'aspect-[9/16] w-[260px] rounded-2xl md:w-[280px]',
+} as const
+
+const mediaCoverClass = 'absolute inset-0 h-full w-full object-cover'
+const youTubeCoverClass =
+  'pointer-events-none absolute left-1/2 top-1/2 h-[178%] w-full max-w-none -translate-x-1/2 -translate-y-1/2 border-0'
+
+export function StoryCard({ story, shape = 'circle', isPlaying: isPlayingProp, onPlayChange }: StoryCardProps) {
   const prefersHover = usePrefersHover()
   const videoRef = useRef<HTMLVideoElement>(null)
   const [internalPlaying, setInternalPlaying] = useState(false)
@@ -92,12 +102,15 @@ export function StoryCard({ story, isPlaying: isPlayingProp, onPlayChange }: Sto
       whileHover={hasVideo && prefersHover ? undefined : { y: -6 }}
       onMouseEnter={handlePointerEnter}
       onMouseLeave={handlePointerLeave}
-      className="relative aspect-[9/16] w-[260px] shrink-0 snap-center overflow-hidden rounded-2xl bg-dq-soft-black shadow-lg md:w-[280px]"
+      className={cn(
+        'relative shrink-0 snap-center overflow-hidden bg-dq-soft-black shadow-lg',
+        shapeClasses[shape],
+      )}
     >
       {!isPlaying && usesVideoFramePoster ? (
         <video
           src={`${videoUrl}#t=0.1`}
-          className="h-full w-full object-cover"
+          className={cn(mediaCoverClass, shape === 'circle' ? 'scale-110' : '')}
           muted
           playsInline
           preload="metadata"
@@ -110,8 +123,10 @@ export function StoryCard({ story, isPlaying: isPlayingProp, onPlayChange }: Sto
           aria-hidden
           onError={handlePosterError}
           className={cn(
-            'h-full w-full object-cover transition-opacity duration-300',
+            mediaCoverClass,
+            'transition-opacity duration-300',
             isPlaying && hasVideo ? 'opacity-0' : 'opacity-100',
+            shape === 'circle' ? 'scale-110' : '',
           )}
         />
       )}
@@ -121,14 +136,14 @@ export function StoryCard({ story, isPlaying: isPlayingProp, onPlayChange }: Sto
           <iframe
             src={youTubeEmbedUrl(youTubeId, { autoplay: true, controls: false, loop: true })}
             title={story.title}
-            className="absolute inset-0 h-full w-full border-0"
+            className={shape === 'circle' ? youTubeCoverClass : cn(mediaCoverClass, 'border-0')}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           />
         ) : (
           <video
             ref={videoRef}
             src={videoUrl}
-            className="absolute inset-0 h-full w-full object-cover"
+            className={mediaCoverClass}
             muted
             loop
             playsInline

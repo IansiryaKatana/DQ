@@ -28,14 +28,14 @@ ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now();
 INSERT INTO dq_navigation_links (id, label, href, sort_order, is_active, show_in_header, show_in_footer, footer_group) VALUES
   ('10010001-0000-4000-8000-000000000001', 'Home',               '/',                  1,  true, true, true, 'quick_links'),
   ('10010001-0000-4000-8000-000000000002', 'About us',           '/about',             2,  true, true, true, 'quick_links'),
-  ('10010001-0000-4000-8000-000000000003', 'Donate',             '/donate',            3,  true, true, true, 'quick_links'),
+  ('10010001-0000-4000-8000-000000000003', 'Donate',             '/donate',            7,  true, true, true, 'quick_links'),
   ('10010001-0000-4000-8000-000000000004', 'Order Free Qurans',  '/order-free-qurans', 4,  false, false, false, 'quick_links'),
-  ('10010001-0000-4000-8000-000000000005', 'Distribute',         '/distribute',        4,  true, true, true, 'quick_links'),
-  ('10010001-0000-4000-8000-000000000006', 'Quran',              '/quran',             5,  true, true, true, 'resources'),
-  ('10010001-0000-4000-8000-000000000007', 'Books',              '/books',             6,  true, true, true, 'resources'),
-  ('10010001-0000-4000-8000-000000000008', 'Articles',           '/articles',          7,  true, true, true, 'resources'),
-  ('10010001-0000-4000-8000-000000000009', 'Videos',             '/videos',            8,  true, true, true, 'resources'),
-  ('10010001-0000-4000-8000-000000000010', 'Contact Us',         '/contact',           9,  true, true, true, 'quick_links')
+  ('10010001-0000-4000-8000-000000000005', 'Distribute',         '/distribute',        9,  true, true, true, 'quick_links'),
+  ('10010001-0000-4000-8000-000000000006', 'Quran',              '/quran',             3,  true, true, true, 'resources'),
+  ('10010001-0000-4000-8000-000000000007', 'Books',              '/books',             4,  true, true, true, 'resources'),
+  ('10010001-0000-4000-8000-000000000008', 'Articles',           '/articles',          5,  true, true, true, 'resources'),
+  ('10010001-0000-4000-8000-000000000009', 'Videos',             '/videos',            6,  true, true, true, 'resources'),
+  ('10010001-0000-4000-8000-000000000010', 'Contact Us',         '/contact',           8,  true, true, true, 'quick_links')
 ON CONFLICT (id) DO UPDATE SET
   label = EXCLUDED.label, href = EXCLUDED.href, sort_order = EXCLUDED.sort_order,
   is_active = EXCLUDED.is_active,
@@ -307,7 +307,7 @@ INSERT INTO dq_quran_wiki_banner (id, title, subtitle, image_url, link_url, is_a
   'Qur''an Wiki',
   'LEARN, STUDY AND REFLECT',
   'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1400&h=400&fit=crop',
-  'https://quranwiki.org',
+  'https://www.quran-wiki.com/',
   true
 ) ON CONFLICT (id) DO UPDATE SET
   title = EXCLUDED.title, subtitle = EXCLUDED.subtitle,
@@ -369,8 +369,8 @@ INSERT INTO dq_footer_settings (id, about_text, email, phone, address, copyright
   '11111111-1111-1111-1111-111111111105',
   'Donate Quran is a faith-based charity dedicated to placing the Qur''an in the hands of people worldwide through donation, distribution, and education.',
   'info@donatequran.org',
-  '+1 (800) 555-0199',
-  '123 Charity Lane, Suite 100, New York, NY 10001',
+  '',
+  '',
   '© 2026 Donate Qur''an. All rights reserved.',
   'Developed with care for the Ummah',
   '[

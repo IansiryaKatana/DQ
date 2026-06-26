@@ -12,7 +12,7 @@ export function QuranPage({ editions }: { editions: QuranEdition[] }) {
         eyebrow="Read & download"
         title="The Qur'an in"
         highlight="your language"
-        description="Download or read the Qur'an in PDF format in various languages. Audio recitation is available where provided."
+        description="Download or read the Qur'an in PDF format in various languages."
         variant="cream"
       />
       <section className="bg-white py-16 md:py-24">

@@ -5,8 +5,6 @@ import { WhatsInsideSection } from '#/components/sections/WhatsInsideSection'
 import { GreatestVentureSection } from '#/components/sections/GreatestVentureSection'
 import { DonationProductsSection } from '#/components/sections/DonationProductsSection'
 import { StoriesSection } from '#/components/sections/StoriesSection'
-import { QuickDonationSection } from '#/components/sections/QuickDonationSection'
-import { BlogPreviewSection } from '#/components/sections/BlogPreviewSection'
 import { QuranWikiBanner } from '#/components/sections/QuranWikiBanner'
 import { PromoTilesSection } from '#/components/sections/PromoTilesSection'
 
@@ -32,8 +30,6 @@ export function HomePage({ data }: { data: CmsSnapshot }) {
       <GreatestVentureSection section={data.ventureSection} images={data.ventureImages} />
       <DonationProductsSection products={data.donationProducts} />
       <StoriesSection stories={data.stories} />
-      <QuickDonationSection products={data.quickDonations} />
-      <BlogPreviewSection posts={data.blogPosts} />
       <QuranWikiBanner banner={data.quranWiki} />
       <PromoTilesSection tiles={wikiGridTiles.length ? wikiGridTiles : data.promoTiles} />
     </PublicLayout>

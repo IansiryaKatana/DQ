@@ -9,7 +9,6 @@ function mapRow(r: Record<string, unknown>): QuranEdition {
     language: r.language as string,
     featuredImageUrl: r.featured_image_url as string,
     pdfUrl: (r.pdf_url as string) ?? null,
-    audioUrl: (r.audio_url as string) ?? null,
     sortOrder: r.sort_order as number,
   }
 }

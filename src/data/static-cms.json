@@ -2,13 +2,13 @@
   "navigation": [
     { "id": "1", "label": "Home", "href": "/", "sortOrder": 1, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" },
     { "id": "2", "label": "About us", "href": "/about", "sortOrder": 2, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" },
-    { "id": "3", "label": "Donate", "href": "/donate", "sortOrder": 3, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" },
-    { "id": "5", "label": "Distribute", "href": "/distribute", "sortOrder": 4, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" },
-    { "id": "6", "label": "Quran", "href": "/quran", "sortOrder": 5, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
-    { "id": "7", "label": "Books", "href": "/books", "sortOrder": 6, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
-    { "id": "8", "label": "Articles", "href": "/articles", "sortOrder": 7, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
-    { "id": "9", "label": "Videos", "href": "/videos", "sortOrder": 8, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
-    { "id": "10", "label": "Contact Us", "href": "/contact", "sortOrder": 9, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" }
+    { "id": "6", "label": "Quran", "href": "/quran", "sortOrder": 3, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
+    { "id": "7", "label": "Books", "href": "/books", "sortOrder": 4, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
+    { "id": "8", "label": "Articles", "href": "/articles", "sortOrder": 5, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
+    { "id": "9", "label": "Videos", "href": "/videos", "sortOrder": 6, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
+    { "id": "3", "label": "Donate", "href": "/donate", "sortOrder": 7, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" },
+    { "id": "10", "label": "Contact Us", "href": "/contact", "sortOrder": 8, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" },
+    { "id": "5", "label": "Distribute", "href": "/distribute", "sortOrder": 9, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" }
   ],
   "hero": {
     "id": "hero-1",
@@ -144,7 +144,7 @@
     "title": "Qur'an Wiki",
     "subtitle": "LEARN, STUDY AND REFLECT",
     "imageUrl": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1400&h=400&fit=crop",
-    "linkUrl": "https://quranwiki.org"
+    "linkUrl": "https://www.quran-wiki.com/"
   },
   "quranWikiArticles": [
     {
@@ -185,8 +185,8 @@
     "id": "footer-1",
     "aboutText": "Donate Quran is a faith-based charity dedicated to placing the Qur'an in the hands of people worldwide through donation, distribution, and education.",
     "email": "info@donatequran.org",
-    "phone": "+1 (800) 555-0199",
-    "address": "123 Charity Lane, Suite 100, New York, NY 10001",
+    "phone": "",
+    "address": "",
     "copyright": "© 2026 Donate Qur'an. All rights reserved.",
     "developerCredit": "Developed with care for the Ummah",
     "socialLinks": [

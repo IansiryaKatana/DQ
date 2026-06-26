@@ -55,7 +55,7 @@ export function StoriesSection({ stories }: { stories: StoryPoster[] }) {
 
       <div className={fullBleedX}>
         <div ref={emblaRef} className="overflow-hidden">
-          <div className="flex gap-4">
+          <div className="flex items-center gap-5 md:gap-6">
             {stories.map((story) => (
               <StoryCard
                 key={story.id}

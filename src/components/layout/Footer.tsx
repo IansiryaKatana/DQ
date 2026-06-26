@@ -51,9 +51,11 @@ export function Footer({ footer, links, logoLightUrl, logoDarkUrl }: FooterProps
         <div>
           <h3 className="type-eyebrow mb-4 text-dq-gold">Contact Us</h3>
           <ul className="type-body space-y-2 text-white/80">
-            <li>{footer.email}</li>
-            <li>{footer.phone}</li>
-            <li>{footer.address}</li>
+            <li>
+              <a href={`mailto:${footer.email}`} className="hover:text-dq-gold">
+                {footer.email}
+              </a>
+            </li>
           </ul>
           <div className="mt-4 flex flex-wrap gap-3">
             {footer.socialLinks.map((s) => (

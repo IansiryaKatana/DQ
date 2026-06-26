@@ -52,7 +52,12 @@ export function AccountLoginPage() {
               <input id="email" type="email" required className={inputClass} value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div>
-              <label className="type-label mb-2 block" htmlFor="password">Password</label>
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <label className="type-label block" htmlFor="password">Password</label>
+                <Link to="/account/forgot-password" className="text-xs text-dq-gold hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
               <input id="password" type="password" required className={inputClass} value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             {error ? <p className="text-sm text-red-600">{error}</p> : null}
