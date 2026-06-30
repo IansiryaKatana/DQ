@@ -32,7 +32,7 @@ export function HeroSection({ hero, className }: { hero: HeroContent; className?
       ) : null}
       <Container className="relative flex h-full items-start py-10 md:items-center md:py-16">
         <motion.div
-          initial={{ opacity: 0, x: -24 }}
+          initial={false}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-xl"

@@ -17,6 +17,8 @@ type AdminAuthContextValue = {
   adminProfile: AdminProfile | null
   canBootstrap: boolean
   signIn: (email: string, password: string) => Promise<{ error?: string }>
+  requestPasswordReset: (email: string) => Promise<{ error?: string }>
+  updatePassword: (password: string) => Promise<{ error?: string }>
   signUp: (
     email: string,
     password: string,
@@ -89,6 +91,24 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     return error ? { error: error.message } : {}
   }, [])
 
+  const requestPasswordReset = useCallback(async (email: string) => {
+    const sb = getSupabase()
+    if (!sb) return { error: 'Password reset is temporarily unavailable.' }
+
+    const redirectTo = `${window.location.origin}/backend/reset-password`
+    const { error } = await sb.auth.resetPasswordForEmail(email.trim(), { redirectTo })
+    return error ? { error: error.message } : {}
+  }, [])
+
+  const updatePassword = useCallback(async (password: string) => {
+    const sb = getSupabase()
+    if (!sb) return { error: 'Password reset is temporarily unavailable.' }
+    if (password.length < 8) return { error: 'Password must be at least 8 characters.' }
+
+    const { error } = await sb.auth.updateUser({ password })
+    return error ? { error: error.message } : {}
+  }, [])
+
   const completeAdminRegistration = useCallback(async (role: SignupAdminRole) => {
     const sb = getSupabase()
     if (!sb) return { error: 'Supabase is not configured.' }
@@ -144,12 +164,14 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
       adminProfile,
       canBootstrap,
       signIn,
+      requestPasswordReset,
+      updatePassword,
       signUp,
       completeAdminRegistration,
       signOut,
       refreshAdminProfile,
     }),
-    [configured, loading, session, adminProfile, canBootstrap, signIn, signUp, completeAdminRegistration, signOut, refreshAdminProfile],
+    [configured, loading, session, adminProfile, canBootstrap, signIn, requestPasswordReset, updatePassword, signUp, completeAdminRegistration, signOut, refreshAdminProfile],
   )
 
   return <AdminAuthContext.Provider value={value}>{children}</AdminAuthContext.Provider>

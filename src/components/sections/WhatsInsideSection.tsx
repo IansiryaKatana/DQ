@@ -21,9 +21,9 @@ export function WhatsInsideSection({ content, className }: { content: WhatsInsid
 
       <Container className="relative flex h-full w-full items-center overflow-y-auto py-10 md:py-16">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          initial={false}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-xl md:max-w-2xl"
         >
           <SectionHeading title={content.heading} highlight={content.highlightWord} />

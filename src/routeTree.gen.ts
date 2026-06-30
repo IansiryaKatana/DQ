@@ -37,11 +37,13 @@ import { Route as BackendStoriesRouteImport } from './routes/backend/stories'
 import { Route as BackendSiteRouteImport } from './routes/backend/site'
 import { Route as BackendSignupRouteImport } from './routes/backend/signup'
 import { Route as BackendSettingsRouteImport } from './routes/backend/settings'
+import { Route as BackendResetPasswordRouteImport } from './routes/backend/reset-password'
 import { Route as BackendQuranWikiRouteImport } from './routes/backend/quran-wiki'
 import { Route as BackendQuranEditionsRouteImport } from './routes/backend/quran-editions'
 import { Route as BackendProductsRouteImport } from './routes/backend/products'
 import { Route as BackendLoginRouteImport } from './routes/backend/login'
 import { Route as BackendHeroRouteImport } from './routes/backend/hero'
+import { Route as BackendForgotPasswordRouteImport } from './routes/backend/forgot-password'
 import { Route as BackendDonationsRouteImport } from './routes/backend/donations'
 import { Route as BackendBooksRouteImport } from './routes/backend/books'
 import { Route as BackendArticlesRouteImport } from './routes/backend/articles'
@@ -198,6 +200,11 @@ const BackendSettingsRoute = BackendSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => BackendRouteRoute,
 } as any)
+const BackendResetPasswordRoute = BackendResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => BackendRouteRoute,
+} as any)
 const BackendQuranWikiRoute = BackendQuranWikiRouteImport.update({
   id: '/quran-wiki',
   path: '/quran-wiki',
@@ -221,6 +228,11 @@ const BackendLoginRoute = BackendLoginRouteImport.update({
 const BackendHeroRoute = BackendHeroRouteImport.update({
   id: '/hero',
   path: '/hero',
+  getParentRoute: () => BackendRouteRoute,
+} as any)
+const BackendForgotPasswordRoute = BackendForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => BackendRouteRoute,
 } as any)
 const BackendDonationsRoute = BackendDonationsRouteImport.update({
@@ -318,11 +330,13 @@ export interface FileRoutesByFullPath {
   '/backend/articles': typeof BackendArticlesRoute
   '/backend/books': typeof BackendBooksRoute
   '/backend/donations': typeof BackendDonationsRoute
+  '/backend/forgot-password': typeof BackendForgotPasswordRoute
   '/backend/hero': typeof BackendHeroRoute
   '/backend/login': typeof BackendLoginRoute
   '/backend/products': typeof BackendProductsRoute
   '/backend/quran-editions': typeof BackendQuranEditionsRoute
   '/backend/quran-wiki': typeof BackendQuranWikiRoute
+  '/backend/reset-password': typeof BackendResetPasswordRoute
   '/backend/settings': typeof BackendSettingsRoute
   '/backend/signup': typeof BackendSignupRoute
   '/backend/site': typeof BackendSiteRoute
@@ -367,11 +381,13 @@ export interface FileRoutesByTo {
   '/backend/articles': typeof BackendArticlesRoute
   '/backend/books': typeof BackendBooksRoute
   '/backend/donations': typeof BackendDonationsRoute
+  '/backend/forgot-password': typeof BackendForgotPasswordRoute
   '/backend/hero': typeof BackendHeroRoute
   '/backend/login': typeof BackendLoginRoute
   '/backend/products': typeof BackendProductsRoute
   '/backend/quran-editions': typeof BackendQuranEditionsRoute
   '/backend/quran-wiki': typeof BackendQuranWikiRoute
+  '/backend/reset-password': typeof BackendResetPasswordRoute
   '/backend/settings': typeof BackendSettingsRoute
   '/backend/signup': typeof BackendSignupRoute
   '/backend/site': typeof BackendSiteRoute
@@ -418,11 +434,13 @@ export interface FileRoutesById {
   '/backend/articles': typeof BackendArticlesRoute
   '/backend/books': typeof BackendBooksRoute
   '/backend/donations': typeof BackendDonationsRoute
+  '/backend/forgot-password': typeof BackendForgotPasswordRoute
   '/backend/hero': typeof BackendHeroRoute
   '/backend/login': typeof BackendLoginRoute
   '/backend/products': typeof BackendProductsRoute
   '/backend/quran-editions': typeof BackendQuranEditionsRoute
   '/backend/quran-wiki': typeof BackendQuranWikiRoute
+  '/backend/reset-password': typeof BackendResetPasswordRoute
   '/backend/settings': typeof BackendSettingsRoute
   '/backend/signup': typeof BackendSignupRoute
   '/backend/site': typeof BackendSiteRoute
@@ -470,11 +488,13 @@ export interface FileRouteTypes {
     | '/backend/articles'
     | '/backend/books'
     | '/backend/donations'
+    | '/backend/forgot-password'
     | '/backend/hero'
     | '/backend/login'
     | '/backend/products'
     | '/backend/quran-editions'
     | '/backend/quran-wiki'
+    | '/backend/reset-password'
     | '/backend/settings'
     | '/backend/signup'
     | '/backend/site'
@@ -519,11 +539,13 @@ export interface FileRouteTypes {
     | '/backend/articles'
     | '/backend/books'
     | '/backend/donations'
+    | '/backend/forgot-password'
     | '/backend/hero'
     | '/backend/login'
     | '/backend/products'
     | '/backend/quran-editions'
     | '/backend/quran-wiki'
+    | '/backend/reset-password'
     | '/backend/settings'
     | '/backend/signup'
     | '/backend/site'
@@ -569,11 +591,13 @@ export interface FileRouteTypes {
     | '/backend/articles'
     | '/backend/books'
     | '/backend/donations'
+    | '/backend/forgot-password'
     | '/backend/hero'
     | '/backend/login'
     | '/backend/products'
     | '/backend/quran-editions'
     | '/backend/quran-wiki'
+    | '/backend/reset-password'
     | '/backend/settings'
     | '/backend/signup'
     | '/backend/site'
@@ -831,6 +855,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BackendSettingsRouteImport
       parentRoute: typeof BackendRouteRoute
     }
+    '/backend/reset-password': {
+      id: '/backend/reset-password'
+      path: '/reset-password'
+      fullPath: '/backend/reset-password'
+      preLoaderRoute: typeof BackendResetPasswordRouteImport
+      parentRoute: typeof BackendRouteRoute
+    }
     '/backend/quran-wiki': {
       id: '/backend/quran-wiki'
       path: '/quran-wiki'
@@ -864,6 +895,13 @@ declare module '@tanstack/react-router' {
       path: '/hero'
       fullPath: '/backend/hero'
       preLoaderRoute: typeof BackendHeroRouteImport
+      parentRoute: typeof BackendRouteRoute
+    }
+    '/backend/forgot-password': {
+      id: '/backend/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/backend/forgot-password'
+      preLoaderRoute: typeof BackendForgotPasswordRouteImport
       parentRoute: typeof BackendRouteRoute
     }
     '/backend/donations': {
@@ -978,11 +1016,13 @@ interface BackendRouteRouteChildren {
   BackendArticlesRoute: typeof BackendArticlesRoute
   BackendBooksRoute: typeof BackendBooksRoute
   BackendDonationsRoute: typeof BackendDonationsRoute
+  BackendForgotPasswordRoute: typeof BackendForgotPasswordRoute
   BackendHeroRoute: typeof BackendHeroRoute
   BackendLoginRoute: typeof BackendLoginRoute
   BackendProductsRoute: typeof BackendProductsRoute
   BackendQuranEditionsRoute: typeof BackendQuranEditionsRoute
   BackendQuranWikiRoute: typeof BackendQuranWikiRoute
+  BackendResetPasswordRoute: typeof BackendResetPasswordRoute
   BackendSettingsRoute: typeof BackendSettingsRoute
   BackendSignupRoute: typeof BackendSignupRoute
   BackendSiteRoute: typeof BackendSiteRoute
@@ -998,11 +1038,13 @@ const BackendRouteRouteChildren: BackendRouteRouteChildren = {
   BackendArticlesRoute: BackendArticlesRoute,
   BackendBooksRoute: BackendBooksRoute,
   BackendDonationsRoute: BackendDonationsRoute,
+  BackendForgotPasswordRoute: BackendForgotPasswordRoute,
   BackendHeroRoute: BackendHeroRoute,
   BackendLoginRoute: BackendLoginRoute,
   BackendProductsRoute: BackendProductsRoute,
   BackendQuranEditionsRoute: BackendQuranEditionsRoute,
   BackendQuranWikiRoute: BackendQuranWikiRoute,
+  BackendResetPasswordRoute: BackendResetPasswordRoute,
   BackendSettingsRoute: BackendSettingsRoute,
   BackendSignupRoute: BackendSignupRoute,
   BackendSiteRoute: BackendSiteRoute,

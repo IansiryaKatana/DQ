@@ -89,9 +89,8 @@ export function GreatestVentureSection({ section, images, className }: Props & {
             {slides.map((image, i) => (
               <motion.div
                 key={image.id}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                initial={false}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
                 className={slideClassName}
               >

@@ -7,6 +7,9 @@
   },
   "scripts": {
     "dev": "vite dev --port 3000",
+    "dev:netlify": "cross-env DEPLOY_TARGET=netlify vite dev --port 3000",
+    "dev:fresh": "vite dev --port 3000 --force",
+    "dev:clean": "powershell -NoProfile -Command \"Remove-Item -Recurse -Force (Join-Path $env:TEMP 'dq-vite'), '.vite', 'node_modules/.vite' -ErrorAction SilentlyContinue\"",
     "generate-routes": "tsr generate",
     "build": "vite build",
     "build:netlify": "cross-env DEPLOY_TARGET=netlify vite build",

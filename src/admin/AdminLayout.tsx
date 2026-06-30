@@ -1,14 +1,28 @@
 import { Link, Navigate, Outlet, useRouterState } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
 import { useAdminAuth } from '#/contexts/AdminAuthContext'
 import { AdminShell } from './AdminShell'
 
 export function AdminLayout() {
   const { configured, loading, session, adminProfile, canBootstrap, signOut } = useAdminAuth()
   const pathname = useRouterState({ select: (s) => s.location.pathname })
-  const isPublicAdminRoute = pathname === '/backend/login' || pathname === '/backend/signup'
+  const isPublicAdminRoute =
+    pathname === '/backend/login' ||
+    pathname === '/backend/signup' ||
+    pathname === '/backend/forgot-password' ||
+    pathname === '/backend/reset-password'
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   if (isPublicAdminRoute) {
     return <Outlet />
+  }
+
+  if (!mounted) {
+    return null
   }
 
   if (!configured) {
