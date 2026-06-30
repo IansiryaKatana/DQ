@@ -80,7 +80,7 @@ export function ContactPage({ footer }: ContactPageProps) {
                   id="contact-email"
                   type="email"
                   required
-                  placeholder="you@example.com"
+                  placeholder="you@donatequran.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className={formControlClass}
@@ -106,7 +106,7 @@ export function ContactPage({ footer }: ContactPageProps) {
               {status === 'error' ? (
                 <p className="text-sm text-red-600">Something went wrong. Please try again or email us directly.</p>
               ) : null}
-              <Button type="submit" variant="gold" disabled={status === 'sending'}>
+              <Button type="submit" variant="gold" className="w-full" disabled={status === 'sending'}>
                 {status === 'sending' ? 'SENDING...' : 'SEND MESSAGE'}
               </Button>
             </form>

@@ -34,13 +34,13 @@ export function DonatePage({ products, quickDonations, trust }: DonatePageProps)
       {products.length > 0 ? (
         <section className="bg-dq-cream/40 py-16 md:py-24">
           <Container>
-            <SectionHeading title="Sponsorship" highlight="Packages" className="mb-10" />
+            <SectionHeading title="Our" highlight="Products" className="mb-10" />
             <ResponsiveCardGrid
               items={products}
               getKey={(product) => product.id}
               renderItem={(product) => <DonationCard product={product} />}
               gapClass="gap-6"
-              carouselLabel="sponsorship packages"
+              carouselLabel="our products"
             />
           </Container>
         </section>
