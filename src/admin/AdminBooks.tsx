@@ -39,16 +39,37 @@ export function AdminBooks() {
   const [saveErr, setSaveErr] = useState<string | null>(null)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [busy, setBusy] = useState(false)
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'draft' | 'published'>('all')
+  const [categoryFilter, setCategoryFilter] = useState('all')
   const deleteConfirm = useAdminDeleteConfirm({ singular: 'book', plural: 'books' })
 
-  const { page, setPage, totalPages, pageRows } = useAdminTablePagination(rows)
+  const categories = useMemo(() => {
+    return [...new Set(rows.map((row) => row.category).filter(Boolean))].sort((a, b) => a.localeCompare(b))
+  }, [rows])
+
+  const filteredRows = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return rows.filter((row) => {
+      if (statusFilter !== 'all' && row.status !== statusFilter) return false
+      if (categoryFilter !== 'all' && row.category !== categoryFilter) return false
+      if (!q) return true
+      const haystack = `${row.title} ${row.slug} ${row.category} ${row.excerpt}`.toLowerCase()
+      return haystack.includes(q)
+    })
+  }, [rows, search, statusFilter, categoryFilter])
+
+  const { page, setPage, totalPages, pageRows } = useAdminTablePagination(filteredRows)
   const selectedCount = selected.size
-  const allSelected = rows.length > 0 && rows.every((row) => selected.has(row.id))
+  const allSelected = filteredRows.length > 0 && filteredRows.every((row) => selected.has(row.id))
+
+  useEffect(() => {
+    setPage(1)
+  }, [search, statusFilter, categoryFilter, setPage])
 
   async function refresh() {
     const sb = getSupabase()
     if (!sb) return
-    // @ts-expect-error dq_books — run migration 20260612140000
     const { data, error } = await sb.from('dq_books').select('*').order('sort_order')
     if (error) return setErr(error.message)
     setErr(null)
@@ -114,7 +135,6 @@ export function AdminBooks() {
     setBusy(true)
     setErr(null)
     try {
-      // @ts-expect-error dq_books — run migration 20260612140000
       const { error } = await sb.from('dq_books').delete().in('id', ids)
       if (error) throw new Error(error.message)
       deleteConfirm.cancel()
@@ -154,7 +174,7 @@ export function AdminBooks() {
       setSelected(new Set())
       return
     }
-    setSelected(new Set(rows.map((row) => row.id)))
+    setSelected(new Set(filteredRows.map((row) => row.id)))
   }
 
   function toggleSelect(id: string) {
@@ -181,6 +201,40 @@ export function AdminBooks() {
     <div>
       {err ? <p className="mb-4 text-sm text-red-400">{err}</p> : null}
 
+      <div className="admin-panel mb-4 grid gap-3 px-4 py-3 md:grid-cols-3">
+        <label className="block space-y-1.5 md:col-span-1">
+          <span className="admin-label">Search</span>
+          <input
+            className="admin-input"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Title, slug, category…"
+          />
+        </label>
+        <label className="block space-y-1.5">
+          <span className="admin-label">Status</span>
+          <AdminSelect
+            value={statusFilter}
+            onValueChange={(value) => setStatusFilter(value as 'all' | 'draft' | 'published')}
+            options={[
+              { value: 'all', label: 'All statuses' },
+              ...ADMIN_STATUS_OPTIONS,
+            ]}
+          />
+        </label>
+        <label className="block space-y-1.5">
+          <span className="admin-label">Category</span>
+          <AdminSelect
+            value={categoryFilter}
+            onValueChange={setCategoryFilter}
+            options={[
+              { value: 'all', label: 'All categories' },
+              ...categories.map((category) => ({ value: category, label: category })),
+            ]}
+          />
+        </label>
+      </div>
+
       {selectedCount > 0 ? (
         <div className="admin-panel mb-4 flex flex-wrap items-center gap-2 px-4 py-3">
           <span className="admin-muted text-sm">{selectedCount} selected</span>
@@ -188,7 +242,7 @@ export function AdminBooks() {
             Publish
           </button>
           <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void bulkSetStatus('draft')}>
-            Unpublish
+            Move to draft
           </button>
           <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
             Delete selected
@@ -215,7 +269,7 @@ export function AdminBooks() {
             {pageRows.length === 0 ? (
               <tr>
                 <td className={cn(adminTd, 'admin-muted py-10 text-center')} colSpan={7}>
-                  No books yet.
+                  {rows.length === 0 ? 'No books yet.' : 'No books match your filters.'}
                 </td>
               </tr>
             ) : (

@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
+import type { ReactNode } from 'react'
 import { Container } from '#/components/ui/container'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
@@ -14,6 +15,7 @@ type PageHeroProps = {
   variant?: 'light' | 'dark' | 'cream'
   primaryCta?: { label: string; href: string }
   secondaryCta?: { label: string; href: string }
+  children?: ReactNode
   className?: string
 }
 
@@ -27,6 +29,7 @@ export function PageHero({
   variant = 'cream',
   primaryCta,
   secondaryCta,
+  children,
   className,
 }: PageHeroProps) {
   const isDark = variant === 'dark'
@@ -83,6 +86,7 @@ export function PageHero({
               {description}
             </p>
           ) : null}
+          {children ? <div className="mt-6 max-w-xl">{children}</div> : null}
           {(primaryCta || secondaryCta) && (
             <div className="mt-8 flex flex-wrap gap-3">
               {primaryCta ? (

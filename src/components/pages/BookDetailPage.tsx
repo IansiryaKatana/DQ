@@ -1,52 +1,87 @@
+import { useEffect, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { format } from 'date-fns'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Eye } from 'lucide-react'
 import type { Book, BookDetail } from '#/lib/cms/types'
-import { Container } from '#/components/ui/container'
 import { Badge } from '#/components/ui/badge'
 import { BookCard } from '#/components/cards/BookCard'
 import { DonationCtaBanner } from '#/components/layout/DonationCtaBanner'
+import { ResponsiveCardGrid } from '#/components/ui/responsive-card-grid'
+import { Container } from '#/components/ui/container'
+import { ShareButtons } from '#/components/books/ShareButtons'
+import { BookComments } from '#/components/books/BookComments'
+import { BOOK_VIEWS_VISIBLE_FROM, recordBookView } from '#/lib/cms/bookEngagement'
 
 export function BookDetailPage({ book, related }: { book: BookDetail; related: Book[] }) {
+  const [viewCount, setViewCount] = useState(book.viewCount ?? 0)
+
+  useEffect(() => {
+    let cancelled = false
+    void recordBookView(book.id).then((count) => {
+      if (!cancelled && typeof count === 'number') setViewCount(count)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [book.id])
+
+  const showViews = viewCount >= BOOK_VIEWS_VISIBLE_FROM
+
   return (
     <>
       <article>
-        <div className="relative overflow-hidden">
+        <div className="w-full overflow-hidden">
           <img src={book.coverImageUrl} alt={book.title} className="block h-auto w-full" />
-          <div className="absolute inset-0 bg-gradient-to-t from-dq-black/70 via-dq-black/20 to-transparent" />
         </div>
-        <Container className="relative -mt-12 pb-12 md:-mt-16">
-          <Link
-            to="/books"
-            className="type-label mb-6 inline-flex items-center gap-2 text-white/80 hover:text-dq-gold"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            All books
-          </Link>
-          <div className="max-w-3xl rounded-2xl bg-white p-6 shadow-lg md:p-10">
-            <Badge>{book.category}</Badge>
-            <h1 className="type-headline mt-4 text-dq-black">{book.title}</h1>
-            <p className="mt-2 text-sm text-dq-muted">
-              {book.authorName} · {format(new Date(book.publishedAt), 'MMMM d, yyyy')}
-              {book.readTime ? ` · ${book.readTime}` : ''}
-            </p>
+        <section className="w-full bg-white py-12 md:py-16">
+          <Container className="max-w-3xl">
+            <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
+              <Link
+                to="/books"
+                className="type-label inline-flex h-8 items-center gap-2 text-dq-muted transition-colors hover:text-dq-gold"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                All books
+              </Link>
+              <Badge className="h-8 items-center">{book.category}</Badge>
+            </div>
+            <h1 className="type-headline text-dq-black">{book.title}</h1>
+            <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-dq-muted">
+              <span>
+                {book.authorName} · {format(new Date(book.publishedAt), 'MMMM d, yyyy')}
+                {book.readTime ? ` · ${book.readTime}` : ''}
+              </span>
+              {showViews ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <Eye className="h-3.5 w-3.5" aria-hidden />
+                  {viewCount.toLocaleString()} views
+                </span>
+              ) : null}
+            </div>
+            <ShareButtons title={book.title} className="mt-6" />
             <div
-              className="prose-dq mt-8 max-w-none [&_p]:type-body [&_p]:text-dq-muted"
+              className="prose-dq mt-10 max-w-none [&_p]:type-body [&_p]:text-dq-muted"
               dangerouslySetInnerHTML={{ __html: book.bodyHtml }}
             />
-          </div>
-        </Container>
+            <BookComments bookId={book.id} />
+          </Container>
+        </section>
       </article>
       {related.length > 0 ? (
         <section className="bg-dq-cream/40 py-16 md:py-24">
-          <Container>
-            <h2 className="type-title mb-8 text-dq-black">More books</h2>
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {related.map((item) => (
-                <BookCard key={item.id} book={item} />
-              ))}
-            </div>
-          </Container>
+          <ResponsiveCardGrid
+            items={related}
+            getKey={(item) => item.id}
+            renderItem={(item) => <BookCard book={item} />}
+            carouselLabel="books"
+            desktopColumns={4}
+            xlDesktopColumns={5}
+            desktopBatchSize={5}
+            desktopExpandable={false}
+            fullWidth
+            gapClass="gap-6 xl:gap-8"
+            header={<h2 className="type-title text-dq-black">More books</h2>}
+          />
         </section>
       ) : null}
       <DonationCtaBanner />

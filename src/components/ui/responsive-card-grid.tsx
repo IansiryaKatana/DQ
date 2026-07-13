@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 
-const fullBleedX = 'px-5 md:px-8'
+const fullBleedX = 'px-5 md:px-8 lg:px-10 xl:px-12'
 
 const carouselSlideClass =
   'min-w-0 shrink-0 grow-0 pl-4 basis-[calc(100vw-2.5rem)] md:basis-[calc((100vw-3rem)/2)]'
@@ -19,10 +19,28 @@ type ResponsiveCardGridProps<T> = {
   showMoreLabel?: string
   showLessLabel?: string
   carouselLabel: string
-  desktopColumns?: 3 | 4
+  desktopColumns?: 3 | 4 | 5
+  /** When set, uses this column count from `xl` up (e.g. 4 on lg, 5 on xl). */
+  xlDesktopColumns?: 4 | 5
   desktopBatchSize?: number
   fullWidth?: boolean
   desktopDividers?: boolean
+  /** Shown on the same row as mobile carousel controls; above the desktop grid. */
+  header?: ReactNode
+  /** When false, desktop shows only the first pageSize batch with no Show more. */
+  desktopExpandable?: boolean
+}
+
+function desktopGridColsClass(columns: 3 | 4 | 5, xlColumns?: 4 | 5) {
+  if (xlColumns && xlColumns !== columns) {
+    const base =
+      columns === 5 ? 'lg:grid-cols-5' : columns === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'
+    const xl = xlColumns === 5 ? 'xl:grid-cols-5' : 'xl:grid-cols-4'
+    return cn(base, xl)
+  }
+  if (columns === 5) return 'lg:grid-cols-5'
+  if (columns === 4) return 'lg:grid-cols-4'
+  return 'lg:grid-cols-3'
 }
 
 export function ResponsiveCardGrid<T>({
@@ -34,9 +52,12 @@ export function ResponsiveCardGrid<T>({
   showLessLabel = 'Show less',
   carouselLabel,
   desktopColumns = 3,
+  xlDesktopColumns,
   desktopBatchSize = DEFAULT_DESKTOP_BATCH_SIZE,
   fullWidth = false,
   desktopDividers = false,
+  header,
+  desktopExpandable = true,
 }: ResponsiveCardGridProps<T>) {
   const [visibleCount, setVisibleCount] = useState(desktopBatchSize)
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false, dragFree: true })
@@ -68,6 +89,10 @@ export function ResponsiveCardGrid<T>({
     emblaApi?.reInit()
   }, [emblaApi, items.length])
 
+  useEffect(() => {
+    setVisibleCount(desktopBatchSize)
+  }, [desktopBatchSize, items])
+
   const carouselControls = (
     <div className="flex shrink-0 gap-2">
       <Button
@@ -95,13 +120,23 @@ export function ResponsiveCardGrid<T>({
 
   return (
     <>
-      <div className={cn('mb-6 flex justify-end lg:hidden', fullBleedX)}>{carouselControls}</div>
+      <div
+        className={cn(
+          'mb-6 flex items-center justify-between gap-4 lg:hidden',
+          fullBleedX,
+        )}
+      >
+        {header ? <div className="min-w-0 flex-1">{header}</div> : <div />}
+        {carouselControls}
+      </div>
+
+      {header ? <div className={cn('mb-8 hidden lg:block', fullBleedX)}>{header}</div> : null}
 
       <div className={cn(fullBleedX, 'lg:hidden')}>
         <div ref={emblaRef} className="overflow-hidden">
           <div className="flex touch-pan-y">
             {items.map((item) => (
-              <div key={getKey(item)} className={carouselSlideClass}>
+              <div key={getKey(item)} className={cn(carouselSlideClass, 'h-full')}>
                 {renderItem(item)}
               </div>
             ))}
@@ -112,23 +147,21 @@ export function ResponsiveCardGrid<T>({
       <div className={cn('hidden lg:block', fullWidth && fullBleedX)}>
         <div
           className={cn(
-            'grid',
-            desktopColumns === 4 ? 'grid-cols-4' : 'grid-cols-3',
+            'grid items-stretch',
+            desktopGridColsClass(desktopColumns, xlDesktopColumns),
             gapClass,
           )}
         >
           {visibleItems.map((item) => (
             <div
               key={getKey(item)}
-              className={cn(
-                desktopDividers && 'border border-dotted border-dq-border/60',
-              )}
+              className={cn('h-full', desktopDividers && 'border border-dotted border-dq-border/60')}
             >
               {renderItem(item)}
             </div>
           ))}
         </div>
-        {hasMore || canShowLess ? (
+        {desktopExpandable && (hasMore || canShowLess) ? (
           <div className="mt-10 flex justify-center gap-4">
             {hasMore ? (
               <Button
@@ -140,11 +173,7 @@ export function ResponsiveCardGrid<T>({
               </Button>
             ) : null}
             {canShowLess ? (
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => setVisibleCount(desktopBatchSize)}
-              >
+              <Button variant="outline" size="lg" onClick={() => setVisibleCount(desktopBatchSize)}>
                 {showLessLabel}
               </Button>
             ) : null}

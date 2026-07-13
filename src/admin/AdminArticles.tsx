@@ -26,11 +26,27 @@ export function AdminArticles() {
   const [saveErr, setSaveErr] = useState<string | null>(null)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [busy, setBusy] = useState(false)
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'draft' | 'published'>('all')
   const deleteConfirm = useAdminDeleteConfirm({ singular: 'article', plural: 'articles' })
 
-  const { page, setPage, totalPages, pageRows } = useAdminTablePagination(rows)
+  const filteredRows = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return rows.filter((row) => {
+      if (statusFilter !== 'all' && row.status !== statusFilter) return false
+      if (!q) return true
+      const haystack = `${row.title} ${row.slug} ${row.category} ${row.excerpt}`.toLowerCase()
+      return haystack.includes(q)
+    })
+  }, [rows, search, statusFilter])
+
+  const { page, setPage, totalPages, pageRows } = useAdminTablePagination(filteredRows)
   const selectedCount = selected.size
-  const allSelected = rows.length > 0 && rows.every((row) => selected.has(row.id))
+  const allSelected = filteredRows.length > 0 && filteredRows.every((row) => selected.has(row.id))
+
+  useEffect(() => {
+    setPage(1)
+  }, [search, statusFilter, setPage])
 
   async function refresh() {
     const sb = getSupabase()
@@ -129,7 +145,7 @@ export function AdminArticles() {
       setSelected(new Set())
       return
     }
-    setSelected(new Set(rows.map((row) => row.id)))
+    setSelected(new Set(filteredRows.map((row) => row.id)))
   }
 
   function toggleSelect(id: string) {
@@ -156,6 +172,29 @@ export function AdminArticles() {
     <div>
       {err ? <p className="mb-4 text-sm text-red-400">{err}</p> : null}
 
+      <div className="admin-panel mb-4 grid gap-3 px-4 py-3 md:grid-cols-2">
+        <label className="block space-y-1.5">
+          <span className="admin-label">Search</span>
+          <input
+            className="admin-input"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Title, slug, category…"
+          />
+        </label>
+        <label className="block space-y-1.5">
+          <span className="admin-label">Status</span>
+          <AdminSelect
+            value={statusFilter}
+            onValueChange={(value) => setStatusFilter(value as 'all' | 'draft' | 'published')}
+            options={[
+              { value: 'all', label: 'All statuses' },
+              ...ADMIN_STATUS_OPTIONS,
+            ]}
+          />
+        </label>
+      </div>
+
       {selectedCount > 0 ? (
         <div className="admin-panel mb-4 flex flex-wrap items-center gap-2 px-4 py-3">
           <span className="admin-muted text-sm">{selectedCount} selected</span>
@@ -163,7 +202,7 @@ export function AdminArticles() {
             Publish
           </button>
           <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void bulkSetStatus('draft')}>
-            Unpublish
+            Move to draft
           </button>
           <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
             Delete selected
@@ -188,7 +227,7 @@ export function AdminArticles() {
             {pageRows.length === 0 ? (
               <tr>
                 <td className={cn(adminTd, 'admin-muted py-10 text-center')} colSpan={5}>
-                  No articles yet.
+                  {rows.length === 0 ? 'No articles yet.' : 'No articles match your filters.'}
                 </td>
               </tr>
             ) : (

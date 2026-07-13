@@ -4,7 +4,7 @@
     { "id": "2", "label": "About us", "href": "/about", "sortOrder": 2, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" },
     { "id": "6", "label": "Quran", "href": "/quran", "sortOrder": 3, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
     { "id": "7", "label": "Books", "href": "/books", "sortOrder": 4, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
-    { "id": "8", "label": "Articles", "href": "/articles", "sortOrder": 5, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
+    { "id": "8", "label": "Articles", "href": "/articles", "sortOrder": 5, "showInHeader": false, "showInFooter": true, "footerGroup": "resources" },
     { "id": "9", "label": "Videos", "href": "/videos", "sortOrder": 6, "showInHeader": true, "showInFooter": true, "footerGroup": "resources" },
     { "id": "3", "label": "Donate", "href": "/donate", "sortOrder": 7, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" },
     { "id": "10", "label": "Contact Us", "href": "/contact", "sortOrder": 8, "showInHeader": true, "showInFooter": true, "footerGroup": "quick_links" },

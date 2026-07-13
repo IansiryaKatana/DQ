@@ -12,7 +12,7 @@ export const Route = createFileRoute('/books/$slug')({
       loadAllBooks(),
     ])
     if (!book) throw notFound()
-    return { cms, book, related: allBooks.filter((b) => b.id !== book.id).slice(0, 3) }
+    return { cms, book, related: allBooks.filter((b) => b.id !== book.id).slice(0, 15) }
   },
   component: BookDetailRoute,
 })

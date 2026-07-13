@@ -33,7 +33,7 @@ INSERT INTO dq_navigation_links (id, label, href, sort_order, is_active, show_in
   ('10010001-0000-4000-8000-000000000005', 'Distribute',         '/distribute',        9,  true, true, true, 'quick_links'),
   ('10010001-0000-4000-8000-000000000006', 'Quran',              '/quran',             3,  true, true, true, 'resources'),
   ('10010001-0000-4000-8000-000000000007', 'Books',              '/books',             4,  true, true, true, 'resources'),
-  ('10010001-0000-4000-8000-000000000008', 'Articles',           '/articles',          5,  true, true, true, 'resources'),
+  ('10010001-0000-4000-8000-000000000008', 'Articles',           '/articles',          5,  true, false, true, 'resources'),
   ('10010001-0000-4000-8000-000000000009', 'Videos',             '/videos',            6,  true, true, true, 'resources'),
   ('10010001-0000-4000-8000-000000000010', 'Contact Us',         '/contact',           8,  true, true, true, 'quick_links')
 ON CONFLICT (id) DO UPDATE SET

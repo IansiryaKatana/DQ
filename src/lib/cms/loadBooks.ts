@@ -37,6 +37,7 @@ export async function loadAllBooks(): Promise<Book[]> {
         publishedAt: r.published_at ?? r.created_at ?? new Date().toISOString(),
         readTime: r.read_time,
         sortOrder: r.sort_order,
+        viewCount: typeof r.view_count === 'number' ? r.view_count : 0,
       }
     })
   } catch {
@@ -81,6 +82,7 @@ export async function loadBookBySlug(slug: string): Promise<BookDetail | null> {
       publishedAt: data.published_at ?? data.created_at ?? new Date().toISOString(),
       readTime: data.read_time,
       sortOrder: data.sort_order,
+      viewCount: typeof data.view_count === 'number' ? data.view_count : 0,
       bodyHtml: data.body_html ?? `<p>${data.excerpt}</p>`,
     }
   } catch {

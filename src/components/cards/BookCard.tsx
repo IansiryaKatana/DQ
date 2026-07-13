@@ -10,7 +10,7 @@ function truncateExcerpt(text: string, maxLength = 70) {
 
 export function BookCard({ book }: { book: Book }) {
   return (
-    <article className="group overflow-hidden rounded-2xl bg-white shadow-sm transition-shadow hover:shadow-lg">
+    <article className="group flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-sm transition-shadow hover:shadow-lg">
       <Link to={`/books/${book.slug}`} className="block overflow-hidden">
         <div className="relative aspect-video w-full overflow-hidden bg-dq-cream/30">
           <img
@@ -20,13 +20,15 @@ export function BookCard({ book }: { book: Book }) {
           />
         </div>
       </Link>
-      <div className="space-y-3 p-6">
-        <Badge>{book.category}</Badge>
+      <div className="flex flex-1 flex-col gap-3 p-6">
+        <Badge className="self-start text-[10px]">{book.category}</Badge>
         <Link to={`/books/${book.slug}`}>
-          <h3 className="type-title text-dq-black transition-colors group-hover:text-dq-gold">{book.title}</h3>
+          <h3 className="text-[16px] font-semibold leading-snug text-dq-black transition-colors group-hover:text-dq-gold">
+            {book.title}
+          </h3>
         </Link>
-        <p className="type-body text-dq-muted">{truncateExcerpt(book.excerpt)}</p>
-        <p className="text-xs text-dq-muted">
+        <p className="text-[12px] leading-relaxed text-dq-muted">{truncateExcerpt(book.excerpt)}</p>
+        <p className="mt-auto text-[10px] leading-snug text-dq-muted">
           {book.authorName} · {format(new Date(book.publishedAt), 'MMM d, yyyy')}
           {book.readTime ? ` · ${book.readTime}` : ''}
         </p>

@@ -344,6 +344,13 @@ export type Database = {
           is_active: boolean
         }[]
       }
+      dq_record_book_view: {
+        Args: {
+          p_book_id: string
+          p_visitor_id: string
+        }
+        Returns: number
+      }
     }
     Enums: Record<string, never>
   }

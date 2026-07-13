@@ -181,6 +181,7 @@ export type Book = {
   publishedAt: string
   readTime?: string | null
   sortOrder: number
+  viewCount?: number
 }
 
 export type BookDetail = Book & {
