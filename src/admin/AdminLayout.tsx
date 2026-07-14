@@ -22,7 +22,11 @@ export function AdminLayout() {
   }
 
   if (!mounted) {
-    return null
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-dq-black text-white">
+        Loading…
+      </div>
+    )
   }
 
   if (!configured) {

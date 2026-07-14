@@ -11,7 +11,7 @@ export function DonationCard({ product }: { product: DonationProduct }) {
   return (
     <motion.article
       whileHover={{ y: -4 }}
-      className="group flex h-full flex-col overflow-hidden rounded-2xl border-2 border-dq-gold/60 bg-white shadow-sm transition-shadow hover:border-dq-gold hover:shadow-lg"
+      className="group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition-shadow hover:shadow-lg"
     >
       <Link to={detailHref} className="block overflow-hidden">
         <img
@@ -21,13 +21,11 @@ export function DonationCard({ product }: { product: DonationProduct }) {
         />
       </Link>
       <div className="flex flex-1 flex-col gap-3 p-5">
-        {product.category ? <p className="type-eyebrow text-dq-muted">{product.category}</p> : null}
         <Link to={detailHref}>
           <h3 className="type-title text-dq-black transition-colors group-hover:text-dq-gold">{product.title}</h3>
         </Link>
         <p className="type-body flex-1 text-dq-muted">{product.description}</p>
         {price ? <p className="type-body text-dq-black">{price}</p> : null}
-        {product.stockStatus ? <p className="text-xs text-dq-muted">{product.stockStatus}</p> : null}
         <AddToGiftButton product={product} className="mt-auto" />
       </div>
     </motion.article>
