@@ -9,7 +9,12 @@ import { ImageUploadField } from './components/ImageUploadField'
 import { AdminTablePagination } from './components/AdminTablePagination'
 import { useAdminTablePagination } from './useAdminTablePagination'
 import { adminTable, adminTd, adminTh } from './adminClassNames'
-import { isAutoYouTubePoster, resolveStoryPosterForSave, resolveStoryPosterUrl } from '#/lib/media/youtube'
+import { generateStoryPosterSnapshot } from '#/lib/cms/generateStoryPoster'
+import {
+  extractYouTubeVideoId,
+  isManagedStoryPoster,
+  resolveStoryPosterUrl,
+} from '#/lib/media/youtube'
 import { useAdminDeleteConfirm } from './useAdminDeleteConfirm'
 import { cn } from '#/lib/utils'
 
@@ -58,16 +63,40 @@ export function AdminStories() {
       return
     }
 
-    const imageUrl = resolveStoryPosterForSave(draft.video_url, draft.image_url)
-
-    if (!imageUrl) {
-      setSaveErr('Upload a poster image for non-YouTube videos, or use a YouTube Shorts URL.')
+    const sb = getSupabase()
+    if (!sb) {
+      setSaveErr('Supabase is not configured.')
       return
     }
 
     setBusy(true)
     setSaveErr(null)
     try {
+      const {
+        data: { session },
+      } = await sb.auth.getSession()
+      if (!session?.access_token) {
+        throw new Error('Sign in again to save stories.')
+      }
+
+      const videoUrl = draft.video_url.trim()
+      const youTubeId = extractYouTubeVideoId(videoUrl)
+      let imageUrl = draft.image_url?.trim() || ''
+
+      if (youTubeId) {
+        const keepCustom = Boolean(imageUrl) && !isManagedStoryPoster(imageUrl)
+        if (!keepCustom) {
+          const snapshot = await generateStoryPosterSnapshot({
+            data: { accessToken: session.access_token, videoUrl },
+          })
+          imageUrl = snapshot.publicUrl
+        }
+      }
+
+      if (!imageUrl) {
+        throw new Error('Upload a poster image for non-YouTube videos, or use a YouTube Shorts URL.')
+      }
+
       await persistRows([
         {
           ...draft,
@@ -147,7 +176,7 @@ export function AdminStories() {
 
   useAdminPageHeader({
     title: 'Story posters',
-    description: 'Vertical short-form cards. Add a YouTube Shorts URL for in-card playback.',
+    description: 'Vertical short-form cards. Saving a YouTube story regenerates its snapshot poster.',
     actions: headerActions,
   })
 
@@ -271,13 +300,13 @@ export function AdminStories() {
                   setDraft({
                     ...draft,
                     video_url: e.target.value,
-                    image_url: isAutoYouTubePoster(draft.image_url) ? '' : draft.image_url,
+                    image_url: isManagedStoryPoster(draft.image_url) ? '' : draft.image_url,
                   })
                 }
                 placeholder="https://youtube.com/shorts/..."
               />
               <span className="admin-muted text-xs">
-                Thumbnail is pulled automatically from YouTube. Plays inside the card on hover or play tap.
+                On save, a fresh YouTube snapshot is downloaded into storage and used as the circle poster.
               </span>
             </label>
             <ImageUploadField
@@ -287,7 +316,7 @@ export function AdminStories() {
               onChange={(v) => setDraft({ ...draft, image_url: v })}
             />
             <span className="admin-muted block text-xs">
-              Leave empty for YouTube Shorts — the video snapshot is used instead.
+              Leave empty for YouTube — a snapshot is regenerated every time you save. Upload only to override.
             </span>
             <label className="block space-y-2">
               <span className="admin-label">Link URL</span>

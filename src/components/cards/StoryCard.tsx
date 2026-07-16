@@ -6,6 +6,7 @@ import { motion } from 'motion/react'
 import type { StoryPoster } from '#/lib/cms/types'
 import {
   extractYouTubeVideoId,
+  isAutoYouTubePoster,
   resolveStoryPosterUrl,
   youTubeEmbedUrl,
   youTubeThumbnailUrl,
@@ -39,7 +40,11 @@ export function StoryCard({ story, shape = 'circle' }: StoryCardProps) {
   }, [story.id, story.videoUrl, story.imageUrl])
 
   const handlePosterError = () => {
-    if (youTubeId) setPosterSrc(youTubeThumbnailUrl(youTubeId, 'hq'))
+    if (!youTubeId) return
+    // Prefer HQ CDN if a stored/oar URL fails to load
+    if (!isAutoYouTubePoster(posterSrc) || posterSrc.includes('oardefault')) {
+      setPosterSrc(youTubeThumbnailUrl(youTubeId, 'hq', videoUrl))
+    }
   }
 
   const card = (
