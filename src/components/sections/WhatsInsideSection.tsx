@@ -1,5 +1,7 @@
+import { Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 import type { WhatsInsideContent } from '#/lib/cms/types'
+import { Button } from '#/components/ui/button'
 import { Container } from '#/components/ui/container'
 import { SectionHeading } from '#/components/ui/section-heading'
 import { cn } from '#/lib/utils'
@@ -39,6 +41,18 @@ export function WhatsInsideSection({ content, className }: { content: WhatsInsid
               </li>
             ))}
           </ul>
+          <div className="mt-10">
+            <Button
+              asChild
+              variant="gold"
+              size="lg"
+              className="h-10 px-3.5 text-[0.625rem] tracking-[0.1em] text-white hover:text-white md:h-12 md:px-8 md:text-sm md:tracking-[0.18em]"
+            >
+              <Link to="/about" className="whitespace-nowrap">
+                OUR STORY
+              </Link>
+            </Button>
+          </div>
         </motion.div>
       </Container>
     </section>

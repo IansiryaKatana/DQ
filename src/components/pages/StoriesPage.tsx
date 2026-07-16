@@ -16,9 +16,11 @@ export function StoriesPage({ stories }: { stories: StoryPoster[] }) {
       />
       <section className="bg-white py-16 md:py-24">
         <Container>
-          <div className="flex flex-wrap items-center justify-center gap-5 md:gap-6">
+          <div className="grid grid-cols-1 justify-items-center gap-5 sm:grid-cols-2 md:gap-6 lg:grid-cols-4">
             {stories.map((story) => (
-              <StoryCard key={story.id} story={story} />
+              <div key={story.id} className="w-full max-w-[260px]">
+                <StoryCard story={story} />
+              </div>
             ))}
           </div>
         </Container>

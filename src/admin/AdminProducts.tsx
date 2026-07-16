@@ -10,7 +10,7 @@ import { AdminTablePagination } from './components/AdminTablePagination'
 import { useAdminTablePagination } from './useAdminTablePagination'
 import { adminTable, adminTd, adminTh } from './adminClassNames'
 import { AdminSelect } from './components/AdminSelect'
-import { resolveSlugFromLabel } from '#/lib/slug'
+import { resolveSlugFromLabel, slugify } from '#/lib/slug'
 import { useAdminDeleteConfirm } from './useAdminDeleteConfirm'
 import { cn } from '#/lib/utils'
 
@@ -101,10 +101,14 @@ export function AdminProducts() {
     setSaveErr(null)
     try {
       const existing = rows.find((row) => row.id === draft.id)
+      const slug = existing
+        ? resolveSlugFromLabel(draft.title, existing.title, existing.slug)
+        : draft.slug?.trim() ||
+          `${slugify(draft.title) || 'product'}-${crypto.randomUUID().slice(0, 8)}`
       await persistRows([
         {
           ...draft,
-          slug: resolveSlugFromLabel(draft.title, existing?.title, existing?.slug),
+          slug,
         } as Row,
       ])
       setDraft(null)
@@ -147,6 +151,42 @@ export function AdminProducts() {
       await persistRows(payload)
     } catch (e) {
       setErr(e instanceof Error ? e.message : 'Could not update products.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  function buildDuplicate(row: Row): Row {
+    const title = `${row.title} (copy)`
+    const suffix = crypto.randomUUID().slice(0, 8)
+    return {
+      ...row,
+      id: crypto.randomUUID(),
+      title,
+      slug: `${slugify(title) || slugify(row.title) || 'product'}-${suffix}`,
+      published: false,
+      sort_order: (row.sort_order ?? 0) + 1,
+    }
+  }
+
+  function duplicateRow(row: Row) {
+    setSaveErr(null)
+    setDraft(buildDuplicate(row))
+  }
+
+  async function duplicateSelected() {
+    const ids = [...selected]
+    if (!ids.length) return
+    setBusy(true)
+    setErr(null)
+    try {
+      const payload = ids
+        .map((id) => rows.find((r) => r.id === id))
+        .filter((row): row is Row => Boolean(row))
+        .map((row) => buildDuplicate(row))
+      await persistRows(payload)
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'Could not duplicate products.')
     } finally {
       setBusy(false)
     }
@@ -240,6 +280,9 @@ export function AdminProducts() {
           <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void bulkSetPublished(false)}>
             Unpublish
           </button>
+          <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void duplicateSelected()}>
+            Duplicate selected
+          </button>
           <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
             Delete selected
           </button>
@@ -302,9 +345,12 @@ export function AdminProducts() {
                   <td className={adminTd}>{row.sort_order}</td>
                   <td className={adminTd}>{row.published ? 'Yes' : 'No'}</td>
                   <td className={adminTd}>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <button type="button" className="admin-btn-secondary" onClick={() => setDraft(row)}>
                         Edit
+                      </button>
+                      <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => duplicateRow(row)}>
+                        Duplicate
                       </button>
                       <button type="button" className="admin-btn-secondary" onClick={() => deleteConfirm.request([row.id])}>
                         Delete
@@ -322,7 +368,13 @@ export function AdminProducts() {
       <AdminModal
         open={!!draft}
         onOpenChange={(open) => !open && setDraft(null)}
-        title={draft?.id && rows.some((r) => r.id === draft.id) ? 'Edit product' : 'Add product'}
+        title={
+          draft?.id && rows.some((r) => r.id === draft.id)
+            ? 'Edit product'
+            : draft?.title?.endsWith('(copy)')
+              ? 'Duplicate product'
+              : 'Add product'
+        }
         wide
         footer={
           <>

@@ -5,18 +5,16 @@ import { Container } from '#/components/ui/container'
 import { ResponsiveCardGrid } from '#/components/ui/responsive-card-grid'
 import { SectionHeading } from '#/components/ui/section-heading'
 import { DonationCard } from '#/components/cards/DonationCard'
-import { QuickDonationCard } from '#/components/cards/QuickDonationCard'
 import { WhyDonateSection } from '#/components/sections/trust/WhyDonateSection'
 import { BankPaymentSection } from '#/components/sections/trust/BankPaymentSection'
 import { TrustHtmlSection } from '#/components/sections/trust/TrustHtmlSection'
 
 type DonatePageProps = {
   products: DonationProduct[]
-  quickDonations: DonationProduct[]
   trust: TrustContent
 }
 
-export function DonatePage({ products, quickDonations, trust }: DonatePageProps) {
+export function DonatePage({ products, trust }: DonatePageProps) {
   return (
     <>
       <PageHero
@@ -41,21 +39,6 @@ export function DonatePage({ products, quickDonations, trust }: DonatePageProps)
               renderItem={(product) => <DonationCard product={product} />}
               gapClass="gap-6"
               carouselLabel="our products"
-            />
-          </Container>
-        </section>
-      ) : null}
-
-      {quickDonations.length > 0 ? (
-        <section className="bg-white py-16 md:py-24">
-          <Container>
-            <SectionHeading title="Quick" highlight="Donation" className="mb-10" />
-            <ResponsiveCardGrid
-              items={quickDonations}
-              getKey={(product) => product.id}
-              renderItem={(product) => <QuickDonationCard product={product} />}
-              gapClass="gap-8"
-              carouselLabel="quick donations"
             />
           </Container>
         </section>

@@ -32,11 +32,11 @@ export function DonateProductPage({ product, related }: DonateProductPageProps) 
           </Link>
 
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
-            <div className="overflow-hidden rounded-2xl border-2 border-dq-gold/60 bg-white shadow-sm">
+            <div className="overflow-hidden rounded-2xl border-2 border-dq-gold/60 bg-white shadow-sm lg:h-full">
               <img
                 src={product.imageUrl}
                 alt={product.title}
-                className="aspect-[4/3] w-full object-cover"
+                className="aspect-[4/3] h-full w-full object-cover lg:aspect-auto lg:min-h-full"
               />
             </div>
 

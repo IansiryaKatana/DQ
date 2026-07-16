@@ -16,17 +16,18 @@ import { cn } from '#/lib/utils'
 type StoryCardProps = {
   story: StoryPoster
   shape?: 'circle' | 'poster'
+  className?: string
 }
 
 const shapeClasses = {
   circle:
-    'h-[220px] w-[220px] rounded-full ring-2 ring-dq-gold/35 ring-offset-2 ring-offset-white md:h-[260px] md:w-[260px]',
-  poster: 'aspect-[9/16] w-[260px] rounded-2xl md:w-[280px]',
+    'aspect-square w-full rounded-full ring-2 ring-dq-gold/35 ring-offset-2 ring-offset-white',
+  poster: 'aspect-[9/16] w-full rounded-2xl',
 } as const
 
 const mediaCoverClass = 'absolute inset-0 h-full w-full object-cover'
 
-export function StoryCard({ story, shape = 'circle' }: StoryCardProps) {
+export function StoryCard({ story, shape = 'circle', className }: StoryCardProps) {
   const [open, setOpen] = useState(false)
   const [posterSrc, setPosterSrc] = useState(() => resolveStoryPosterUrl(story))
 
@@ -53,6 +54,7 @@ export function StoryCard({ story, shape = 'circle' }: StoryCardProps) {
       className={cn(
         'relative shrink-0 snap-center overflow-hidden bg-dq-soft-black shadow-lg',
         shapeClasses[shape],
+        className,
       )}
     >
       {usesVideoFramePoster ? (

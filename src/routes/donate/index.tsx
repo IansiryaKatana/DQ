@@ -11,7 +11,6 @@ export const Route = createFileRoute('/donate/')({
       cms,
       trust: cms.trust,
       products: products.filter((p) => p.kind === 'product'),
-      quickDonations: products.filter((p) => p.kind === 'quick'),
     }
   },
   head: () => ({
@@ -24,10 +23,10 @@ export const Route = createFileRoute('/donate/')({
 })
 
 function DonateRoute() {
-  const { cms, trust, products, quickDonations } = Route.useLoaderData()
+  const { cms, trust, products } = Route.useLoaderData()
   return (
     <PublicLayout data={cms}>
-      <DonatePage products={products} quickDonations={quickDonations} trust={trust} />
+      <DonatePage products={products} trust={trust} />
     </PublicLayout>
   )
 }

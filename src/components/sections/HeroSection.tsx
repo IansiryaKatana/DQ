@@ -3,7 +3,6 @@ import { Link } from '@tanstack/react-router'
 import { animate, motion, useInView } from 'motion/react'
 import type { HeroContent } from '#/lib/cms/types'
 import { Button } from '#/components/ui/button'
-import { Container } from '#/components/ui/container'
 import { cn } from '#/lib/utils'
 
 const COPIES_DONATED = 875_000
@@ -67,7 +66,7 @@ export function HeroSection({ hero, className }: { hero: HeroContent; className?
           />
         </picture>
       ) : null}
-      <Container className="relative flex h-full items-start py-10 md:items-center md:py-16">
+      <div className="relative flex h-full w-full items-start px-5 py-10 md:items-center md:px-8 md:py-16 lg:px-10 xl:px-12">
         <motion.div
           initial={false}
           animate={{ opacity: 1, x: 0 }}
@@ -106,7 +105,7 @@ export function HeroSection({ hero, className }: { hero: HeroContent; className?
             </Button>
           </div>
         </motion.div>
-      </Container>
+      </div>
     </section>
   )
 }
