@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
+import AutoScroll from 'embla-carousel-auto-scroll'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { motion } from 'motion/react'
 import type { VentureImage, VentureSection } from '#/lib/cms/types'
@@ -13,17 +14,39 @@ type Props = {
   images: VentureImage[]
 }
 
+/** 1 / 2 / 5 visible; pl-4 gap baked into each slide */
 const slideClassName =
-  'min-w-0 shrink-0 grow-0 pl-4 basis-[calc(100vw-2.5rem)] sm:basis-[calc((100vw-3rem)/2)] lg:basis-[calc((100vw-7.5rem)/4)]'
+  'min-w-0 shrink-0 grow-0 pl-4 basis-[calc(100vw-2.5rem)] sm:basis-[calc((100vw-3rem)/2)] lg:basis-[calc((100vw-7.5rem)/5)]'
 
 const fullBleedX = 'px-5 md:px-8 lg:px-10 xl:px-12'
 
 export function GreatestVentureSection({ section, images, className }: Props & { className?: string }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: true, dragFree: false })
+  const autoScroll = useMemo(
+    () =>
+      AutoScroll({
+        playOnInit: true,
+        speed: 0.8,
+        startDelay: 0,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true,
+        stopOnFocusIn: true,
+      }),
+    [],
+  )
+
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { align: 'start', loop: true, dragFree: true },
+    [autoScroll],
+  )
   const [canPrev, setCanPrev] = useState(false)
   const [canNext, setCanNext] = useState(false)
 
-  const slides = images.filter((image) => image.imageUrl?.trim())
+  const sourceSlides = images.filter((image) => image.imageUrl?.trim())
+  // Duplicate so loop/marquee stays seamless when there are few images
+  const slides =
+    sourceSlides.length > 0 && sourceSlides.length < 10
+      ? [...sourceSlides, ...sourceSlides, ...sourceSlides]
+      : sourceSlides
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return
@@ -88,10 +111,10 @@ export function GreatestVentureSection({ section, images, className }: Props & {
           <div className="flex touch-pan-y">
             {slides.map((image, i) => (
               <motion.div
-                key={image.id}
+                key={`${image.id}-${i}`}
                 initial={false}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
+                transition={{ delay: Math.min(i, sourceSlides.length) * 0.05 }}
                 className={slideClassName}
               >
                 <div className="overflow-hidden rounded-2xl border-2 border-dq-gold shadow-lg">

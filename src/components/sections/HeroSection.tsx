@@ -1,16 +1,53 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { ArrowRight } from 'lucide-react'
-import { motion } from 'motion/react'
+import { animate, motion, useInView } from 'motion/react'
 import type { HeroContent } from '#/lib/cms/types'
 import { Button } from '#/components/ui/button'
 import { Container } from '#/components/ui/container'
 import { cn } from '#/lib/utils'
+
+const COPIES_DONATED = 875_000
 
 function heroBackgroundSources(hero: HeroContent) {
   const desktop = hero.imageUrl
   const tablet = hero.imageUrlTablet?.trim() || desktop
   const mobile = hero.imageUrlMobile?.trim() || tablet || desktop
   return { desktop, tablet, mobile }
+}
+
+function CopiesDonatedMeter({ value = COPIES_DONATED }: { value?: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true, amount: 0.4 })
+  const [display, setDisplay] = useState('0')
+
+  useEffect(() => {
+    if (!isInView) return
+    const controls = animate(0, value, {
+      duration: 2.4,
+      ease: [0.22, 1, 0.36, 1],
+      onUpdate: (latest) => setDisplay(Math.round(latest).toLocaleString('en-US')),
+    })
+    return () => controls.stop()
+  }, [isInView, value])
+
+  return (
+    <div
+      ref={ref}
+      className="mt-8 max-w-sm"
+      aria-label={`${value.toLocaleString('en-US')} copies donated`}
+    >
+      <p className="type-headline tabular-nums text-dq-black">{display}</p>
+      <p className="type-eyebrow mt-2.5 text-dq-gold">Copies donated</p>
+      <div className="mt-3 h-px w-full max-w-[11rem] overflow-hidden bg-dq-border" aria-hidden>
+        <motion.div
+          className="h-full origin-left bg-dq-gold"
+          initial={{ scaleX: 0 }}
+          animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
+          transition={{ duration: 2.4, ease: [0.22, 1, 0.36, 1] }}
+        />
+      </div>
+    </div>
+  )
 }
 
 export function HeroSection({ hero, className }: { hero: HeroContent; className?: string }) {
@@ -45,6 +82,7 @@ export function HeroSection({ hero, className }: { hero: HeroContent; className?
             <span className="text-dq-gold">{hero.highlightWord}</span>
           </h1>
           <p className="type-body mt-8 max-w-lg text-dq-muted">{hero.description}</p>
+          <CopiesDonatedMeter />
           <div className="mt-10 flex flex-nowrap items-center gap-2 md:gap-5">
             <Button
               asChild
@@ -58,12 +96,12 @@ export function HeroSection({ hero, className }: { hero: HeroContent; className?
             </Button>
             <Button
               asChild
-              variant="link"
-              className="h-auto min-w-0 shrink justify-start gap-1.5 p-0 text-[0.625rem] tracking-[0.08em] md:gap-2 md:text-sm md:tracking-normal"
+              variant="gold"
+              size="lg"
+              className="h-10 shrink-0 px-3.5 text-[0.625rem] tracking-[0.1em] text-white hover:text-white md:h-12 md:px-8 md:text-sm md:tracking-[0.18em]"
             >
               <Link to={hero.secondaryCtaUrl} className="whitespace-nowrap">
                 {hero.secondaryCtaLabel}
-                <ArrowRight className="h-3.5 w-3.5 shrink-0 md:h-4 md:w-4" />
               </Link>
             </Button>
           </div>

@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState, type MouseEvent } from 'react'
+import { useEffect, useState } from 'react'
+import * as Dialog from '@radix-ui/react-dialog'
 import { Link } from '@tanstack/react-router'
-import { Play } from 'lucide-react'
+import { Play, X } from 'lucide-react'
 import { motion } from 'motion/react'
 import type { StoryPoster } from '#/lib/cms/types'
 import {
@@ -11,87 +12,31 @@ import {
 } from '#/lib/media/youtube'
 import { cn } from '#/lib/utils'
 
-function usePrefersHover() {
-  const [prefersHover, setPrefersHover] = useState(false)
-
-  useEffect(() => {
-    const media = window.matchMedia('(hover: hover) and (pointer: fine)')
-    const update = () => setPrefersHover(media.matches)
-    update()
-    media.addEventListener('change', update)
-    return () => media.removeEventListener('change', update)
-  }, [])
-
-  return prefersHover
-}
-
 type StoryCardProps = {
   story: StoryPoster
   shape?: 'circle' | 'poster'
-  isPlaying?: boolean
-  onPlayChange?: (playing: boolean) => void
 }
 
 const shapeClasses = {
-  circle: 'h-[220px] w-[220px] rounded-full ring-2 ring-dq-gold/35 ring-offset-2 ring-offset-white md:h-[260px] md:w-[260px]',
+  circle:
+    'h-[220px] w-[220px] rounded-full ring-2 ring-dq-gold/35 ring-offset-2 ring-offset-white md:h-[260px] md:w-[260px]',
   poster: 'aspect-[9/16] w-[260px] rounded-2xl md:w-[280px]',
 } as const
 
 const mediaCoverClass = 'absolute inset-0 h-full w-full object-cover'
-const youTubeCoverClass =
-  'pointer-events-none absolute left-1/2 top-1/2 h-[178%] w-full max-w-none -translate-x-1/2 -translate-y-1/2 border-0'
 
-export function StoryCard({ story, shape = 'circle', isPlaying: isPlayingProp, onPlayChange }: StoryCardProps) {
-  const prefersHover = usePrefersHover()
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const [internalPlaying, setInternalPlaying] = useState(false)
+export function StoryCard({ story, shape = 'circle' }: StoryCardProps) {
+  const [open, setOpen] = useState(false)
   const [posterSrc, setPosterSrc] = useState(() => resolveStoryPosterUrl(story))
 
-  const isControlled = isPlayingProp !== undefined
-  const isPlaying = isControlled ? isPlayingProp : internalPlaying
   const videoUrl = story.videoUrl?.trim() || ''
   const youTubeId = videoUrl ? extractYouTubeVideoId(videoUrl) : null
   const hasVideo = Boolean(videoUrl)
   const usesVideoFramePoster = hasVideo && !youTubeId && !story.imageUrl?.trim()
 
-  const setPlaying = useCallback(
-    (playing: boolean) => {
-      if (onPlayChange) onPlayChange(playing)
-      if (!isControlled) setInternalPlaying(playing)
-    },
-    [isControlled, onPlayChange],
-  )
-
   useEffect(() => {
     setPosterSrc(resolveStoryPosterUrl(story))
   }, [story.id, story.videoUrl, story.imageUrl])
-
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video || youTubeId) return
-
-    if (isPlaying) {
-      void video.play().catch(() => undefined)
-      return
-    }
-
-    video.pause()
-    video.currentTime = 0
-  }, [isPlaying, youTubeId])
-
-  const handlePointerEnter = () => {
-    if (prefersHover && hasVideo) setPlaying(true)
-  }
-
-  const handlePointerLeave = () => {
-    if (prefersHover && hasVideo) setPlaying(false)
-  }
-
-  const handlePlayClick = (event: MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
-    if (hasVideo) setPlaying(true)
-  }
 
   const handlePosterError = () => {
     if (youTubeId) setPosterSrc(youTubeThumbnailUrl(youTubeId, 'hq'))
@@ -99,15 +44,13 @@ export function StoryCard({ story, shape = 'circle', isPlaying: isPlayingProp, o
 
   const card = (
     <motion.div
-      whileHover={hasVideo && prefersHover ? undefined : { y: -6 }}
-      onMouseEnter={handlePointerEnter}
-      onMouseLeave={handlePointerLeave}
+      whileHover={{ y: -6 }}
       className={cn(
         'relative shrink-0 snap-center overflow-hidden bg-dq-soft-black shadow-lg',
         shapeClasses[shape],
       )}
     >
-      {!isPlaying && usesVideoFramePoster ? (
+      {usesVideoFramePoster ? (
         <video
           src={`${videoUrl}#t=0.1`}
           className={cn(mediaCoverClass, shape === 'circle' ? 'scale-110' : '')}
@@ -122,40 +65,14 @@ export function StoryCard({ story, shape = 'circle', isPlaying: isPlayingProp, o
           alt=""
           aria-hidden
           onError={handlePosterError}
-          className={cn(
-            mediaCoverClass,
-            'transition-opacity duration-300',
-            isPlaying && hasVideo ? 'opacity-0' : 'opacity-100',
-            shape === 'circle' ? 'scale-110' : '',
-          )}
+          className={cn(mediaCoverClass, shape === 'circle' ? 'scale-110' : '')}
         />
       )}
 
-      {isPlaying && hasVideo ? (
-        youTubeId ? (
-          <iframe
-            src={youTubeEmbedUrl(youTubeId, { autoplay: true, controls: false, loop: true })}
-            title={story.title}
-            className={shape === 'circle' ? youTubeCoverClass : cn(mediaCoverClass, 'border-0')}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          />
-        ) : (
-          <video
-            ref={videoRef}
-            src={videoUrl}
-            className={mediaCoverClass}
-            muted
-            loop
-            playsInline
-            preload="metadata"
-          />
-        )
-      ) : null}
-
-      {hasVideo && !isPlaying ? (
+      {hasVideo ? (
         <button
           type="button"
-          onClick={handlePlayClick}
+          onClick={() => setOpen(true)}
           className="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors hover:bg-black/30"
           aria-label={`Play ${story.title}`}
         >
@@ -167,7 +84,64 @@ export function StoryCard({ story, shape = 'circle', isPlaying: isPlayingProp, o
     </motion.div>
   )
 
-  if (hasVideo || !story.linkUrl) return card
+  const trigger = hasVideo || !story.linkUrl ? card : <Link to={story.linkUrl}>{card}</Link>
 
-  return <Link to={story.linkUrl}>{card}</Link>
+  return (
+    <>
+      {trigger}
+
+      {hasVideo ? (
+        <Dialog.Root open={open} onOpenChange={setOpen}>
+          <Dialog.Portal>
+            <Dialog.Overlay className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-[2px]" />
+            <Dialog.Content
+              className="fixed left-1/2 top-1/2 z-[70] flex w-[min(100vw-2rem,420px)] -translate-x-1/2 -translate-y-1/2 flex-col outline-none"
+              aria-describedby={undefined}
+              onOpenAutoFocus={(event) => event.preventDefault()}
+            >
+              <div className="mb-3 flex items-start justify-between gap-3">
+                <Dialog.Title className="type-title min-w-0 flex-1 text-white">
+                  {story.title}
+                </Dialog.Title>
+                <Dialog.Close
+                  className="shrink-0 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-dq-gold"
+                  aria-label="Close video"
+                >
+                  <X className="h-5 w-5" />
+                </Dialog.Close>
+              </div>
+
+              <div className="relative mx-auto aspect-[9/16] h-[min(80dvh,720px)] w-auto max-w-full overflow-hidden rounded-2xl bg-black shadow-2xl ring-1 ring-white/10">
+                {open ? (
+                  youTubeId ? (
+                    <iframe
+                      src={youTubeEmbedUrl(youTubeId, {
+                        autoplay: true,
+                        controls: true,
+                        loop: true,
+                        mute: false,
+                      })}
+                      title={story.title}
+                      className="absolute inset-0 h-full w-full border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <video
+                      src={videoUrl}
+                      className="absolute inset-0 h-full w-full object-contain"
+                      controls
+                      autoPlay
+                      playsInline
+                      loop
+                    />
+                  )
+                ) : null}
+              </div>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
+      ) : null}
+    </>
+  )
 }

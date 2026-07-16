@@ -62,13 +62,14 @@ type YouTubeEmbedOptions = {
   autoplay?: boolean
   controls?: boolean
   loop?: boolean
+  mute?: boolean
 }
 
 export function youTubeEmbedUrl(videoId: string, options: YouTubeEmbedOptions = {}) {
-  const { autoplay = false, controls = true, loop = false } = options
+  const { autoplay = false, controls = true, loop = false, mute = true } = options
   const params = new URLSearchParams({
     autoplay: autoplay ? '1' : '0',
-    mute: '1',
+    mute: mute ? '1' : '0',
     controls: controls ? '1' : '0',
     playsinline: '1',
     modestbranding: '1',

@@ -20,8 +20,8 @@
     "imageUrl": "/images/hero-quran.jpg",
     "primaryCtaLabel": "DONATE NOW",
     "primaryCtaUrl": "/donate",
-    "secondaryCtaLabel": "SEE OUR PROGRAMS",
-    "secondaryCtaUrl": "/projects"
+    "secondaryCtaLabel": "ORDER FREE COPY",
+    "secondaryCtaUrl": "/order-free-qurans"
   },
   "whatsInside": {
     "id": "inside-1",
