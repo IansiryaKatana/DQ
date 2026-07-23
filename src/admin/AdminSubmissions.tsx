@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getSupabase } from '#/integrations/supabase/client'
 import { useAdminPageHeader } from './AdminPageContext'
-import { adminTable, adminTd, adminTh } from './adminClassNames'
+import { adminTable, adminTableWrap, adminTd, adminTh } from './adminClassNames'
 import { cn } from '#/lib/utils'
 
 type SubmissionRow = {
@@ -59,7 +59,7 @@ export function AdminSubmissions() {
           </button>
         ))}
       </div>
-      <div className="admin-panel overflow-x-auto p-4">
+      <div className={adminTableWrap}>
         <table className={adminTable}>
           <thead>
             <tr>

@@ -6,7 +6,7 @@ import { AdminModal } from './components/AdminModal'
 import { AdminTablePagination } from './components/AdminTablePagination'
 import { RichTextEditor } from './components/RichTextEditor'
 import { useAdminTablePagination } from './useAdminTablePagination'
-import { adminTable, adminTd, adminTh } from './adminClassNames'
+import { adminTable, adminTableWrap, adminTd, adminTh } from './adminClassNames'
 import { cn } from '#/lib/utils'
 
 type TrustRow = {
@@ -133,7 +133,7 @@ export function AdminTrustContent() {
         </div>
       ) : null}
 
-      <div className="admin-panel overflow-x-auto">
+      <div className={adminTableWrap}>
         <table className={adminTable}>
           <thead>
             <tr>

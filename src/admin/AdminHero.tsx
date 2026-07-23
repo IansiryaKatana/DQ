@@ -5,7 +5,7 @@ import { useCms } from '#/contexts/CmsContext'
 import { useAdminPageHeader } from './AdminPageContext'
 import { AdminModal } from './components/AdminModal'
 import { ImageUploadField } from './components/ImageUploadField'
-import { adminTable, adminTd, adminTh } from './adminClassNames'
+import { adminTable, adminTableWrap, adminTd, adminTh } from './adminClassNames'
 
 type Row = Database['public']['Tables']['dq_hero_content']['Row']
 type InsideRow = Database['public']['Tables']['dq_whats_inside']['Row']
@@ -111,7 +111,7 @@ export function AdminHero() {
   return (
     <div>
       {err ? <p className="mb-4 text-sm text-red-400">{err}</p> : null}
-      <div className="admin-panel overflow-x-auto">
+      <div className={adminTableWrap}>
         <table className={adminTable}>
           <thead>
             <tr>

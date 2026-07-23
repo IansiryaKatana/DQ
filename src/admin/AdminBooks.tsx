@@ -10,7 +10,7 @@ import { ImageUploadField } from './components/ImageUploadField'
 import { RichTextEditor } from './components/RichTextEditor'
 import { useAdminTablePagination } from './useAdminTablePagination'
 import { resolveSlugFromLabel } from '#/lib/slug'
-import { adminTable, adminTd, adminTh } from './adminClassNames'
+import { adminTable, adminTableWrap, adminTd, adminTh } from './adminClassNames'
 import { AdminSelect } from './components/AdminSelect'
 import { ADMIN_STATUS_OPTIONS } from './adminSelectOptions'
 import { useAdminDeleteConfirm } from './useAdminDeleteConfirm'
@@ -243,83 +243,49 @@ export function AdminBooks() {
     <div className="flex flex-col gap-4">
       {err ? <p className="text-sm text-red-400">{err}</p> : null}
 
-      <div className="admin-panel flex flex-col gap-4 px-4 py-4">
-        <label className="flex max-w-md flex-col gap-1.5">
-          <span className="admin-label">Search</span>
+      <div className="flex flex-col gap-3">
+        <div className="grid gap-3 md:grid-cols-2">
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Title, slug, category…"
+            placeholder="Search title, slug, category…"
+            aria-label="Search books"
             className="h-10 bg-white"
           />
-        </label>
-
-        <div className="flex flex-col gap-2">
-          <span className="admin-label">Status</span>
-          <Tabs
-            value={statusFilter}
-            onValueChange={(value) => setStatusFilter(value as StatusFilter)}
-          >
-            <TabsList variant="line" className="h-auto w-full max-w-full flex-wrap justify-start gap-1 bg-transparent p-0">
-              {(
-                [
-                  { value: 'all', label: 'All', count: statusCounts.all },
-                  { value: 'draft', label: 'Draft', count: statusCounts.draft },
-                  { value: 'published', label: 'Published', count: statusCounts.published },
-                ] as const
-              ).map((tab) => (
-                <TabsTrigger
-                  key={tab.value}
-                  value={tab.value}
-                  className="h-9 gap-2 rounded-full border border-transparent px-3 data-active:border-[#e5e5e5] data-active:bg-white data-active:shadow-none data-[state=active]:border-[#e5e5e5] data-[state=active]:bg-white data-[state=active]:shadow-none"
-                >
-                  {tab.label}
-                  <Badge variant={statusFilter === tab.value ? 'default' : 'secondary'} className="h-5 min-w-5 px-1.5">
-                    {tab.count}
-                  </Badge>
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+          <AdminSelect
+            value={categoryFilter}
+            onValueChange={setCategoryFilter}
+            placeholder="Category"
+            className="h-10 bg-white"
+            options={categoryChips.map((chip) => ({
+              value: chip.value,
+              label: `${chip.label} (${categoryCounts[chip.value] ?? 0})`,
+            }))}
+          />
         </div>
 
-        <div className="flex flex-col gap-2">
-          <span className="admin-label">
-            Category
-            {statusFilter !== 'all' ? (
-              <span className="ml-1 normal-case tracking-normal">({statusFilter} counts)</span>
-            ) : null}
-          </span>
-          <div className="-mx-1 overflow-x-auto px-1 pb-1">
-            <div className="flex w-max gap-2">
-              {categoryChips.map((chip) => {
-                const count = categoryCounts[chip.value] ?? 0
-                const active = categoryFilter === chip.value
-                return (
-                  <button
-                    key={chip.value}
-                    type="button"
-                    onClick={() => setCategoryFilter(chip.value)}
-                    className={cn(
-                      'inline-flex h-9 shrink-0 items-center gap-2 rounded-full border px-3 text-sm transition-colors',
-                      active
-                        ? 'border-[#171717] bg-[#171717] text-white'
-                        : 'border-[#e5e5e5] bg-transparent text-[#171717] hover:bg-white',
-                    )}
-                  >
-                    <span>{chip.label}</span>
-                    <Badge
-                      variant={active ? 'secondary' : 'outline'}
-                      className={cn('h-5 min-w-5 px-1.5', active && 'border-transparent bg-white/15 text-white')}
-                    >
-                      {count}
-                    </Badge>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-        </div>
+        <Tabs value={statusFilter} onValueChange={(value) => setStatusFilter(value as StatusFilter)}>
+          <TabsList variant="line" className="h-auto w-full max-w-full flex-wrap justify-start gap-1 bg-transparent p-0">
+            {(
+              [
+                { value: 'all', label: 'All', count: statusCounts.all },
+                { value: 'draft', label: 'Draft', count: statusCounts.draft },
+                { value: 'published', label: 'Published', count: statusCounts.published },
+              ] as const
+            ).map((tab) => (
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className="h-9 gap-2 rounded-full border border-transparent px-3 data-active:border-[#e5e5e5] data-active:bg-white data-active:shadow-none data-[state=active]:border-[#e5e5e5] data-[state=active]:bg-white data-[state=active]:shadow-none"
+              >
+                {tab.label}
+                <Badge variant={statusFilter === tab.value ? 'default' : 'secondary'} className="h-5 min-w-5 px-1.5">
+                  {tab.count}
+                </Badge>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
       </div>
 
       {selectedCount > 0 ? (
@@ -331,13 +297,13 @@ export function AdminBooks() {
           <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void bulkSetStatus('draft')}>
             Move to draft
           </button>
-          <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
+          <button type="button" className="admin-btn-danger" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
             Delete selected
           </button>
         </div>
       ) : null}
 
-      <div className="admin-panel overflow-x-auto">
+      <div className={adminTableWrap}>
         <table className={adminTable}>
           <thead>
             <tr>
@@ -361,7 +327,7 @@ export function AdminBooks() {
               </tr>
             ) : (
               pageRows.map((row) => (
-                <tr key={row.id} className="hover:bg-white/60">
+                <tr key={row.id} className="[&>td]:hover:bg-[#f5f5f3]">
                   <td className={adminTd}>
                     <input
                       type="checkbox"
@@ -391,7 +357,7 @@ export function AdminBooks() {
                       <button type="button" className="admin-btn-secondary" onClick={() => setDraft(row)}>
                         Edit
                       </button>
-                      <button type="button" className="admin-btn-secondary" onClick={() => deleteConfirm.request([row.id])}>
+                      <button type="button" className="admin-btn-danger" onClick={() => deleteConfirm.request([row.id])}>
                         Delete
                       </button>
                     </div>

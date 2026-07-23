@@ -285,7 +285,7 @@ export function AdminSite() {
                         <div className="flex items-end">
                           <button
                             type="button"
-                            className="admin-btn-secondary w-full md:w-auto"
+                            className="admin-btn-danger w-full md:w-auto"
                             onClick={() => removeSocialLink(index)}
                           >
                             Remove

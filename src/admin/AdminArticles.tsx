@@ -9,7 +9,7 @@ import { ImageUploadField } from './components/ImageUploadField'
 import { RichTextEditor } from './components/RichTextEditor'
 import { AdminTablePagination } from './components/AdminTablePagination'
 import { useAdminTablePagination } from './useAdminTablePagination'
-import { adminTable, adminTd, adminTh } from './adminClassNames'
+import { adminFilters, adminTable, adminTableWrap, adminTd, adminTh } from './adminClassNames'
 import { AdminSelect } from './components/AdminSelect'
 import { ADMIN_STATUS_OPTIONS } from './adminSelectOptions'
 import { resolveSlugFromLabel } from '#/lib/slug'
@@ -172,27 +172,23 @@ export function AdminArticles() {
     <div>
       {err ? <p className="mb-4 text-sm text-red-400">{err}</p> : null}
 
-      <div className="admin-panel mb-4 grid gap-3 px-4 py-3 md:grid-cols-2">
-        <label className="block space-y-1.5">
-          <span className="admin-label">Search</span>
-          <input
-            className="admin-input"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Title, slug, category…"
-          />
-        </label>
-        <label className="block space-y-1.5">
-          <span className="admin-label">Status</span>
-          <AdminSelect
-            value={statusFilter}
-            onValueChange={(value) => setStatusFilter(value as 'all' | 'draft' | 'published')}
-            options={[
-              { value: 'all', label: 'All statuses' },
-              ...ADMIN_STATUS_OPTIONS,
-            ]}
-          />
-        </label>
+      <div className={adminFilters}>
+        <input
+          className="admin-input"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search title, slug, category…"
+          aria-label="Search articles"
+        />
+        <AdminSelect
+          value={statusFilter}
+          onValueChange={(value) => setStatusFilter(value as 'all' | 'draft' | 'published')}
+          options={[
+            { value: 'all', label: 'All statuses' },
+            ...ADMIN_STATUS_OPTIONS,
+          ]}
+          placeholder="Status"
+        />
       </div>
 
       {selectedCount > 0 ? (
@@ -204,13 +200,13 @@ export function AdminArticles() {
           <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void bulkSetStatus('draft')}>
             Move to draft
           </button>
-          <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
+          <button type="button" className="admin-btn-danger" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
             Delete selected
           </button>
         </div>
       ) : null}
 
-      <div className="admin-panel overflow-x-auto">
+      <div className={adminTableWrap}>
         <table className={adminTable}>
           <thead>
             <tr>
@@ -244,7 +240,7 @@ export function AdminArticles() {
                   <td className={adminTd}>
                     <button
                       type="button"
-                      className="block overflow-hidden rounded-lg border border-[#e5e5e5] bg-[#fafafa]"
+                      className="block overflow-hidden border border-[#e5e5e5] bg-[#fafafa]"
                       onClick={() => setDraft(row)}
                       title="Edit article"
                     >
@@ -262,7 +258,7 @@ export function AdminArticles() {
                       <button type="button" className="admin-btn-secondary" onClick={() => setDraft(row)}>
                         Edit
                       </button>
-                      <button type="button" className="admin-btn-secondary" onClick={() => deleteConfirm.request([row.id])}>
+                      <button type="button" className="admin-btn-danger" onClick={() => deleteConfirm.request([row.id])}>
                         Delete
                       </button>
                     </div>

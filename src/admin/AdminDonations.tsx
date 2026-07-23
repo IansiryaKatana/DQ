@@ -4,7 +4,7 @@ import { X } from 'lucide-react'
 import { getSupabase } from '#/integrations/supabase/client'
 import { useAdminAuth } from '#/contexts/AdminAuthContext'
 import { useAdminPageHeader } from './AdminPageContext'
-import { adminTable, adminTd, adminTh } from './adminClassNames'
+import { adminTable, adminTableWrap, adminTd, adminTh } from './adminClassNames'
 import { AdminSelect } from './components/AdminSelect'
 import { ADMIN_FULFILLMENT_OPTIONS } from './adminSelectOptions'
 import { formatPrice } from '#/lib/utils'
@@ -115,7 +115,7 @@ export function AdminDonations() {
   return (
     <div>
       {err && !selected ? <p className="mb-4 text-sm text-red-400">{err}</p> : null}
-      <div className="admin-panel overflow-x-auto p-4">
+      <div className={adminTableWrap}>
         <table className={adminTable}>
           <thead>
             <tr>

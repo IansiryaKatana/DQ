@@ -10,7 +10,7 @@ import { ImageUploadField } from './components/ImageUploadField'
 import { MediaUploadField } from './components/MediaUploadField'
 import { useAdminTablePagination } from './useAdminTablePagination'
 import { resolveSlugFromLabel } from '#/lib/slug'
-import { adminTable, adminTd, adminTh } from './adminClassNames'
+import { adminTable, adminTableWrap, adminTd, adminTh } from './adminClassNames'
 import { AdminSelect } from './components/AdminSelect'
 import { ADMIN_VIDEO_TYPE_OPTIONS } from './adminSelectOptions'
 import { useAdminDeleteConfirm } from './useAdminDeleteConfirm'
@@ -183,13 +183,13 @@ export function AdminVideos() {
           <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void bulkSetPublished(false)}>
             Unpublish
           </button>
-          <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
+          <button type="button" className="admin-btn-danger" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
             Delete selected
           </button>
         </div>
       ) : null}
 
-      <div className="admin-panel overflow-x-auto">
+      <div className={adminTableWrap}>
         <table className={adminTable}>
           <thead>
             <tr>
@@ -234,7 +234,7 @@ export function AdminVideos() {
                       <button type="button" className="admin-btn-secondary" onClick={() => setDraft(row)}>
                         Edit
                       </button>
-                      <button type="button" className="admin-btn-secondary" onClick={() => deleteConfirm.request([row.id])}>
+                      <button type="button" className="admin-btn-danger" onClick={() => deleteConfirm.request([row.id])}>
                         Delete
                       </button>
                     </div>

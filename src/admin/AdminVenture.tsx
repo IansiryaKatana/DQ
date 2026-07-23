@@ -8,7 +8,7 @@ import { AdminDeleteConfirmDialog } from './components/AdminDeleteConfirmDialog'
 import { ImageUploadField } from './components/ImageUploadField'
 import { AdminTablePagination } from './components/AdminTablePagination'
 import { useAdminTablePagination } from './useAdminTablePagination'
-import { adminTable, adminTd, adminTh } from './adminClassNames'
+import { adminTable, adminTableWrap, adminTd, adminTh } from './adminClassNames'
 import { useAdminDeleteConfirm } from './useAdminDeleteConfirm'
 import { cn } from '#/lib/utils'
 
@@ -178,13 +178,13 @@ export function AdminVenture() {
           <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => void bulkSetActive(false)}>
             Deactivate
           </button>
-          <button type="button" className="admin-btn-secondary" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
+          <button type="button" className="admin-btn-danger" disabled={busy} onClick={() => deleteConfirm.request([...selected])}>
             Delete selected
           </button>
         </div>
       ) : null}
 
-      <div className="admin-panel overflow-x-auto">
+      <div className={adminTableWrap}>
         <table className={adminTable}>
           <thead>
             <tr>
@@ -219,7 +219,7 @@ export function AdminVenture() {
                   <td className={adminTd}>
                     <button
                       type="button"
-                      className="block overflow-hidden rounded-lg border border-[#e5e5e5] bg-[#fafafa]"
+                      className="block overflow-hidden border border-[#e5e5e5] bg-[#fafafa]"
                       onClick={() => setDraft(row)}
                       title="Edit venture image"
                     >
@@ -238,7 +238,7 @@ export function AdminVenture() {
                       <button type="button" className="admin-btn-secondary" onClick={() => setDraft(row)}>
                         Edit
                       </button>
-                      <button type="button" className="admin-btn-secondary" onClick={() => deleteConfirm.request([row.id])}>
+                      <button type="button" className="admin-btn-danger" onClick={() => deleteConfirm.request([row.id])}>
                         Delete
                       </button>
                     </div>
