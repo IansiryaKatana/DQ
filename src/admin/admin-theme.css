@@ -16,7 +16,17 @@
 }
 
 /* Light main content + auth pages */
-.admin-content,
+.admin-content {
+  --admin-surface: #f7f7f5;
+  --admin-panel: transparent;
+  --admin-border: #e5e5e5;
+  --admin-text: #171717;
+  --admin-muted: #737373;
+  --admin-input-bg: #ffffff;
+  background: var(--admin-surface);
+  color: var(--admin-text);
+}
+
 .admin-auth-page {
   --admin-surface: #f7f7f5;
   --admin-panel: #ffffff;
@@ -39,6 +49,7 @@
   border: 1px solid var(--admin-border);
   border-radius: var(--admin-radius-lg);
   color: var(--admin-text);
+  box-shadow: none;
 }
 
 .admin-label {

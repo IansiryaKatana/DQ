@@ -31,7 +31,7 @@ export function ArticleDetailPage({ post, related }: ArticleDetailPageProps) {
           </Link>
 
           <div className="max-w-3xl rounded-2xl bg-white p-6 shadow-lg md:p-10">
-            <Badge>{post.category}</Badge>
+            <Badge className="type-eyebrow h-auto px-3 py-1.5 tracking-[0.28em] uppercase">{post.category}</Badge>
             <h1 className="type-headline mt-4 text-dq-black">{post.title}</h1>
             <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-dq-muted">
               {post.authorAvatar ? (

@@ -21,7 +21,9 @@ export function BookCard({ book }: { book: Book }) {
         </div>
       </Link>
       <div className="flex flex-1 flex-col gap-3 p-6">
-        <Badge className="self-start text-[10px]">{book.category}</Badge>
+        <Badge className="type-eyebrow self-start h-auto px-3 py-1.5 text-[10px] tracking-[0.28em] uppercase">
+          {book.category}
+        </Badge>
         <Link to={`/books/${book.slug}`}>
           <h3 className="text-[16px] font-semibold leading-snug text-dq-black transition-colors group-hover:text-dq-gold">
             {book.title}

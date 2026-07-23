@@ -43,7 +43,7 @@ export function BookDetailPage({ book, related }: { book: BookDetail; related: B
                 <ArrowLeft className="h-4 w-4" />
                 All books
               </Link>
-              <Badge className="h-8 items-center">{book.category}</Badge>
+              <Badge className="type-eyebrow h-8 items-center px-3 tracking-[0.28em] uppercase">{book.category}</Badge>
             </div>
             <h1 className="type-headline text-dq-black">{book.title}</h1>
             <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-dq-muted">

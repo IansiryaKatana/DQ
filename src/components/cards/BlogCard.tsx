@@ -21,7 +21,7 @@ export function BlogCard({ post }: { post: BlogPost }) {
         </div>
       </Link>
       <div className="space-y-3 p-6">
-        <Badge>{post.category}</Badge>
+        <Badge className="type-eyebrow h-auto px-3 py-1.5 text-[10px] tracking-[0.28em] uppercase">{post.category}</Badge>
         <Link to={`/articles/${post.slug}`}>
           <h3 className="type-title text-dq-black transition-colors group-hover:text-dq-gold">{post.title}</h3>
         </Link>
